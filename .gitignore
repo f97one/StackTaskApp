@@ -1,0 +1,12 @@
+*.iml
+.gradle/
+/local.properties
+/.idea/*
+!/.idea/encodings.xml
+build/*
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.classpath
+.project
