@@ -1,4 +1,6 @@
 package net.formula97.stacktask
 
-class TheApp {
+import android.app.Application
+
+class TheApp : Application() {
 }
