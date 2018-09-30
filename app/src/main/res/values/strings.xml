@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">StackTask</string>
     <string name="action_settings">Settings</string>
+    <string name="task_list">Task List</string>
+    <string name="setting">Setting</string>
+    <string name="logout">Logout</string>
 </resources>
