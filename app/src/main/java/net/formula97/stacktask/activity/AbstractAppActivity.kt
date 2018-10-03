@@ -19,6 +19,11 @@ abstract class AbstractAppActivity: AppCompatActivity() {
 
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
+    /**
+     * 画面遷移フラグ
+     */
+    private var permitViewFlip: Boolean = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -28,10 +33,17 @@ abstract class AbstractAppActivity: AppCompatActivity() {
         onCreateImpl(savedInstanceState)
     }
 
+    override fun onResume() {
+        super.onResume()
+        permitViewFlip = true
+
+        onResumeImpl()
+    }
+
     /**
      * NavigationDrawerを初期化する
      */
-    fun initDrawer() {
+    private fun initDrawer() {
         // ユーザー名
         val user = getUser()
         if (user != null) user_name.text = user.displayName else {
@@ -123,6 +135,20 @@ abstract class AbstractAppActivity: AppCompatActivity() {
         app_drawer.removeDrawerListener(actionBarDrawerToggle)
     }
 
+    override fun startActivity(intent: Intent?) {
+        if (permitViewFlip) {
+            permitViewFlip = false
+            super.startActivity(intent)
+        }
+    }
+
+    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
+        if (permitViewFlip) {
+            permitViewFlip = false
+            super.startActivityForResult(intent, requestCode)
+        }
+    }
+
     /**
      * レイアウトを展開する。
      */
@@ -132,4 +158,9 @@ abstract class AbstractAppActivity: AppCompatActivity() {
      * 各ActivityでのonCreate実装
      */
     abstract fun onCreateImpl(savedInstanceState: Bundle?)
+
+    /**
+     * 各ActivityでのonResume実装
+     */
+    abstract fun onResumeImpl()
 }
