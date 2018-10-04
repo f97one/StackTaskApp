@@ -6,4 +6,6 @@
     <string name="logout">Logout</string>
     <string name="drawer_open">Open drawer</string>
     <string name="drawer_close">Close drawer</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="signin_please_wait">Sign In : Please wait.</string>
 </resources>

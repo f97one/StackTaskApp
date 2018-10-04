@@ -1,16 +1,69 @@
 package net.formula97.stacktask.activity
 
+import android.content.Intent
 import android.os.Bundle
-import com.firebase.ui.auth.AuthUI
-import com.google.android.gms.auth.api.Auth
+import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseUser
+import kotlinx.android.synthetic.main.login.*
 import net.formula97.stacktask.R
+import net.formula97.stacktask.logic.FirebaseLogic
+import net.formula97.stacktask.logic.impl.FirebaseLogicImpl
+import net.formula97.stacktask.repository.impl.FirebaseRepositoryImpl
 
-class LoginActivity : AbstractAppActivity() {
+class LoginActivity : AppCompatActivity() {
 
     private val loginRequestCode: Int = 0x8086
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login)
+
+        login_button.setOnClickListener { _ ->
+            // ログイン処理を行う
+            val firebaseLogic = FirebaseLogicImpl(FirebaseRepositoryImpl(), applicationContext)
+            val signInIntent = firebaseLogic.getGoogleSignInClient().signInIntent
+            startActivityForResult(signInIntent, loginRequestCode)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == loginRequestCode) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+
+            val prog = ProgressFragment()
+            prog.show(supportFragmentManager, ProgressFragment.FRAGMENT_TAG)
+
+            try {
+                val account = task.getResult(ApiException::class.java)
+                val firebaseLogic = FirebaseLogicImpl(FirebaseRepositoryImpl(), applicationContext)
+                firebaseLogic.signInWithGoogle(account!!, onSignInFinisedListener)
+            } catch (e: ApiException) {
+                Toast.makeText(applicationContext, "Login failure", Toast.LENGTH_SHORT).show()
+
+                prog.dismiss()
+            }
+
+        }
+    }
+
+    val onSignInFinisedListener = object: FirebaseLogic.OnSignInFinishedListener {
+        override fun onSuccess(loggedUser: FirebaseUser) {
+            val prog: ProgressFragment = supportFragmentManager.findFragmentByTag(ProgressFragment.FRAGMENT_TAG) as ProgressFragment
+            prog.dismiss()
+
+            Toast.makeText(applicationContext, "Login successful", Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onFailure(reasonException: ApiException) {
+            val prog: ProgressFragment = supportFragmentManager.findFragmentByTag(ProgressFragment.FRAGMENT_TAG) as ProgressFragment
+            prog.dismiss()
+
+            Toast.makeText(applicationContext, "Login failure", Toast.LENGTH_SHORT).show()
+        }
     }
 }
