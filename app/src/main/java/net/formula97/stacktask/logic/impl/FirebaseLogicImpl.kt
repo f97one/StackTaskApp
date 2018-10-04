@@ -6,20 +6,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import dagger.Binds
 import net.formula97.stacktask.R
 import net.formula97.stacktask.kind.TaskItem
 import net.formula97.stacktask.logic.FirebaseLogic
 import net.formula97.stacktask.repository.FirebaseRepository
-import java.util.*
-import javax.inject.Inject
 
-class FirebaseLogicImpl @Inject constructor(private val firebaseRepository: FirebaseRepository, private val context: Context) : FirebaseLogic {
+class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepository, private val context: Context) : FirebaseLogic {
 
     private var googleSignInClient: GoogleSignInClient? = null
 
