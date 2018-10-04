@@ -1,6 +1,7 @@
 package net.formula97.stacktask.logic.impl
 
 import android.content.Context
+import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -9,12 +10,24 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.experimental.launch
 import net.formula97.stacktask.R
 import net.formula97.stacktask.kind.TaskItem
 import net.formula97.stacktask.logic.FirebaseLogic
 import net.formula97.stacktask.repository.FirebaseRepository
 
 class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepository, private val context: Context) : FirebaseLogic {
+    override fun logout(callback: FirebaseLogic.OnSignInFinishedListener) {
+        val auth = FirebaseAuth.getInstance()
+        auth.addAuthStateListener { firebaseAuth ->
+            Log.d("logout", "FirebaseAuth state changed.")
+
+            if (firebaseAuth.currentUser == null) {
+                callback.onSuccess(null)
+            }
+        }
+        auth.signOut()
+    }
 
     private var googleSignInClient: GoogleSignInClient? = null
 
@@ -38,7 +51,7 @@ class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepo
         auth.signInWithCredential(cred)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        callback.onSuccess(auth.currentUser!!)
+                        callback.onSuccess(auth.currentUser)
                     } else {
                         callback.onFailure(task.exception as ApiException)
                     }

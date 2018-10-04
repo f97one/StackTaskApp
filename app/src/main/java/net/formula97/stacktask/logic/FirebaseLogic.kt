@@ -10,7 +10,7 @@ import java.util.*
 interface FirebaseLogic {
 
     interface OnSignInFinishedListener: EventListener {
-        fun onSuccess(loggedUser: FirebaseUser)
+        fun onSuccess(loggedUser: FirebaseUser?)
         fun onFailure(reasonException: ApiException)
     }
 
@@ -25,6 +25,8 @@ interface FirebaseLogic {
     fun getCurrentUser(): FirebaseUser?
 
     fun getGoogleSignInClient(): GoogleSignInClient
+
+    fun logout(callback: FirebaseLogic.OnSignInFinishedListener)
 
     fun readTasks(uid: String): List<TaskItem>
     fun addTask(taskItem: TaskItem)
