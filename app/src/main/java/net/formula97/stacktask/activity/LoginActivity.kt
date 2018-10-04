@@ -22,10 +22,20 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.login)
 
         login_button.setOnClickListener { _ ->
-            // ログイン処理を行う
+            // ログインボタンをロックしてログイン処理を行う
+            login_button.isEnabled = false
+
             val firebaseLogic = FirebaseLogicImpl(FirebaseRepositoryImpl(), applicationContext)
             val signInIntent = firebaseLogic.getGoogleSignInClient().signInIntent
             startActivityForResult(signInIntent, loginRequestCode)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (!login_button.isEnabled) {
+            login_button.isEnabled = true
         }
     }
 
@@ -52,16 +62,22 @@ class LoginActivity : AppCompatActivity() {
     }
 
     val onSignInFinisedListener = object: FirebaseLogic.OnSignInFinishedListener {
-        override fun onSuccess(loggedUser: FirebaseUser) {
+        override fun onSuccess(loggedUser: FirebaseUser?) {
             val prog: ProgressFragment = supportFragmentManager.findFragmentByTag(ProgressFragment.FRAGMENT_TAG) as ProgressFragment
             prog.dismiss()
 
-            Toast.makeText(applicationContext, "Login successful", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(applicationContext, "Login successful", Toast.LENGTH_SHORT).show()
+            val intent = Intent(applicationContext, TaskListActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+
+            startActivity(intent)
         }
 
         override fun onFailure(reasonException: ApiException) {
             val prog: ProgressFragment = supportFragmentManager.findFragmentByTag(ProgressFragment.FRAGMENT_TAG) as ProgressFragment
             prog.dismiss()
+
+            login_button.isEnabled = true
 
             Toast.makeText(applicationContext, "Login failure", Toast.LENGTH_SHORT).show()
         }
