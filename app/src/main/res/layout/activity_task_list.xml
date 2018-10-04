@@ -6,4 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".activity.TaskListActivity">
 
+    <include layout="@layout/app_toolbar_layout" />
+
+    <include layout="@layout/app_navigation_drawer" />
+
 </android.support.constraint.ConstraintLayout>

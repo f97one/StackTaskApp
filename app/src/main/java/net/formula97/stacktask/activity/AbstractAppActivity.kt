@@ -12,6 +12,7 @@ import android.widget.AdapterView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.app_navigation_drawer.*
+import kotlinx.android.synthetic.main.app_toolbar_layout.*
 import net.formula97.stacktask.R
 import net.formula97.stacktask.view.adapter.DrawerItemAdapter
 
@@ -44,6 +45,9 @@ abstract class AbstractAppActivity: AppCompatActivity() {
      * NavigationDrawerを初期化する
      */
     private fun initDrawer() {
+        // NavigationDrawer 生成の前に ToolBarを初期化
+        setSupportActionBar(app_toolbar)
+
         // ユーザー名
         val user = getUser()
         if (user != null) user_name.text = user.displayName else {
@@ -90,8 +94,8 @@ abstract class AbstractAppActivity: AppCompatActivity() {
 
         app_drawer.addDrawerListener(actionBarDrawerToggle)
 
-        actionBar.setDisplayHomeAsUpEnabled(true)
-        actionBar.setHomeButtonEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeButtonEnabled(true)
     }
 
     /**
