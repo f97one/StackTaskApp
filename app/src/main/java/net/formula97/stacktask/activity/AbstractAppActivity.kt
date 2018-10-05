@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.app_navigation_drawer.*
@@ -61,7 +62,7 @@ abstract class AbstractAppActivity: AppCompatActivity() {
         // NavigationDrawer 生成の前に ToolBarを初期化
         setSupportActionBar(app_toolbar)
 
-        app_drawer_layout.openDrawer(GravityCompat.START)
+        //app_drawer_layout.openDrawer(GravityCompat.START)
 
         // ヘッダに名前と画像を追加
         val currentUser = getUser()
@@ -74,7 +75,9 @@ abstract class AbstractAppActivity: AppCompatActivity() {
         if (currentUser != null) {
             userName.text = currentUser.displayName
             userEmail.text = currentUser.email
-            userImage.setImageURI(currentUser.photoUrl)
+
+            // アイコンイメージを読み込む
+            Glide.with(this).load(currentUser.photoUrl).into(userImage)
         } else {
             userName.text = ""
             userEmail.text = ""
@@ -84,10 +87,11 @@ abstract class AbstractAppActivity: AppCompatActivity() {
         // 選択イベント処理
         app_navigation_view.setNavigationItemSelectedListener { menuItem ->
             var result = false
+            // 先にドロワーを閉じる
+            app_drawer_layout.closeDrawer(GravityCompat.START)
 
             when (menuItem.itemId) {
                 R.id.nav_task_list -> {
-                    Log.d("NavigationDrawer", "R.id.nav_task_list clicked")
                     // タスクリスト画面を前に出す
                     val i1 = Intent(applicationContext, TaskListActivity::class.java)
                     i1.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -95,19 +99,15 @@ abstract class AbstractAppActivity: AppCompatActivity() {
                     result = true
                 }
                 R.id.nav_setting -> {
-                    Log.d("NavigationDrawer", "R.id.nav_setting clicked")
                     // 設定画面を開く
                     result = true
                 }
                 R.id.nav_logout -> {
-                    Log.d("NavigationDrawer", "R.id.nav_logout clicked")
                     // ログアウト要求を出す
                     val callback: FirebaseLogic.OnSignInFinishedListener = object: FirebaseLogic.OnSignInFinishedListener {
                         override fun onSuccess(loggedUser: FirebaseUser?) {
-                            Log.d("NavigationDrawer", "logout successfully finished.")
-
                             val i3 = Intent(applicationContext, LoginActivity::class.java)
-//                            i3.flags = Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY
+                            i3.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                             startActivity(i3)
                         }
 
@@ -120,7 +120,6 @@ abstract class AbstractAppActivity: AppCompatActivity() {
                 }
             }
 
-            app_drawer_layout.closeDrawer(GravityCompat.START)
             return@setNavigationItemSelectedListener result
         }
     }
@@ -156,20 +155,6 @@ abstract class AbstractAppActivity: AppCompatActivity() {
     override fun onStop() {
         super.onStop()
 
-    }
-
-    override fun startActivity(intent: Intent?) {
-        if (permitViewFlip) {
-            permitViewFlip = false
-            super.startActivity(intent)
-        }
-    }
-
-    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
-        if (permitViewFlip) {
-            permitViewFlip = false
-            super.startActivityForResult(intent, requestCode)
-        }
     }
 
     /**
