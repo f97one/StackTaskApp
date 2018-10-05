@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.login.*
 import net.formula97.stacktask.R
@@ -63,17 +62,18 @@ class LoginActivity : AppCompatActivity() {
             try {
                 val account = task.getResult(ApiException::class.java)
                 val firebaseLogic = FirebaseLogicImpl(FirebaseRepositoryImpl(), applicationContext)
-                firebaseLogic.signInWithGoogle(account!!, onSignInFinisedListener)
+                firebaseLogic.signInWithGoogle(account!!, onSignInFinishedListener)
             } catch (e: ApiException) {
                 Toast.makeText(applicationContext, R.string.google_login_failed, Toast.LENGTH_SHORT).show()
 
                 prog.dismiss()
+                login_button.isEnabled = true
             }
 
         }
     }
 
-    val onSignInFinisedListener = object: FirebaseLogic.OnSignInFinishedListener {
+    private val onSignInFinishedListener = object: FirebaseLogic.OnSignInFinishedListener {
         override fun onSuccess(loggedUser: FirebaseUser?) {
             val prog: ProgressFragment = supportFragmentManager.findFragmentByTag(ProgressFragment.FRAGMENT_TAG) as ProgressFragment
             prog.dismiss()
