@@ -3,9 +3,11 @@ package net.formula97.stacktask.activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.login.*
 import net.formula97.stacktask.R
@@ -37,6 +39,16 @@ class LoginActivity : AppCompatActivity() {
         if (!login_button.isEnabled) {
             login_button.isEnabled = true
         }
+
+        val firebaseLogic = FirebaseLogicImpl(FirebaseRepositoryImpl(), applicationContext)
+
+        if (firebaseLogic.getCurrentUser() == null) {
+            initializing.visibility = View.GONE
+            login_button.visibility = View.VISIBLE
+        } else {
+            val intent = Intent(this, TaskListActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -53,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
                 val firebaseLogic = FirebaseLogicImpl(FirebaseRepositoryImpl(), applicationContext)
                 firebaseLogic.signInWithGoogle(account!!, onSignInFinisedListener)
             } catch (e: ApiException) {
-                Toast.makeText(applicationContext, "Login failure", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, R.string.google_login_failed, Toast.LENGTH_SHORT).show()
 
                 prog.dismiss()
             }
@@ -66,7 +78,6 @@ class LoginActivity : AppCompatActivity() {
             val prog: ProgressFragment = supportFragmentManager.findFragmentByTag(ProgressFragment.FRAGMENT_TAG) as ProgressFragment
             prog.dismiss()
 
-//            Toast.makeText(applicationContext, "Login successful", Toast.LENGTH_SHORT).show()
             val intent = Intent(applicationContext, TaskListActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
 
@@ -79,7 +90,7 @@ class LoginActivity : AppCompatActivity() {
 
             login_button.isEnabled = true
 
-            Toast.makeText(applicationContext, "Login failure", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, R.string.firebase_auth_failed, Toast.LENGTH_SHORT).show()
         }
     }
 }

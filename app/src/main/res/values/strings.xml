@@ -8,4 +8,7 @@
     <string name="drawer_close">Close drawer</string>
     <string name="login_with_google">Login with Google</string>
     <string name="signin_please_wait">Sign In : Please wait.</string>
+    <string name="initializing">Initializing...</string>
+    <string name="google_login_failed">Google Sign In failed. Please retry.</string>
+    <string name="firebase_auth_failed">Authentication In failed. Please retry.</string>
 </resources>
