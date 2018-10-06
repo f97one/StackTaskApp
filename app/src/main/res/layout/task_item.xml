@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_margin="4dp" android:paddingBottom="12dp">
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/item_completed_check"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:button="@null"
+        android:background="?android:attr/listChoiceIndicatorMultiple"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/item_task_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="26sp"
+        android:layout_toEndOf="@+id/item_completed_check"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="8dp"
+        tools:text="Write new blog entry"
+        android:ellipsize="end" />
+
+    <LinearLayout
+        android:id="@+id/sub_params_container"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_completed_check">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/due_date_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/due_date_label"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/item_due_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="2018/10/10 18:00"
+                android:layout_marginEnd="8dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/priority_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/priority_label"
+                android:layout_marginEnd="8dp" />
+
+            <RatingBar
+                android:id="@+id/item_priority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:isIndicator="true"
+                android:numStars="3"
+                android:rating="1"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_marginTop="3dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

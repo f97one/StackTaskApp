@@ -11,4 +11,9 @@
     <string name="initializing">Initializing...</string>
     <string name="google_login_failed">Google Sign In failed. Please retry.</string>
     <string name="firebase_auth_failed">Authentication In failed. Please retry.</string>
+    <string name="by_due_date">by Due Date</string>
+    <string name="by_priority">by Priority</string>
+    <string name="by_name">by Name</string>
+    <string name="due_date_label">Due Date :</string>
+    <string name="priority_label">Priority</string>
 </resources>
