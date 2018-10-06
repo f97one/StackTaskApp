@@ -14,7 +14,9 @@ import kotlinx.android.synthetic.main.app_navigation_drawer.*
 import kotlinx.android.synthetic.main.app_toolbar_layout.*
 import net.formula97.stacktask.R
 import net.formula97.stacktask.logic.FirebaseLogic
+import net.formula97.stacktask.logic.PreferenceLogic
 import net.formula97.stacktask.logic.impl.FirebaseLogicImpl
+import net.formula97.stacktask.logic.impl.PreferenceLogicImpl
 import net.formula97.stacktask.repository.impl.FirebaseRepositoryImpl
 
 abstract class AbstractAppActivity: AppCompatActivity() {
@@ -24,12 +26,15 @@ abstract class AbstractAppActivity: AppCompatActivity() {
      */
     lateinit var firebaseLogic: FirebaseLogic private set
 
+    lateinit var preferenceLogic: PreferenceLogic private set
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         inflateLayout()
 
         firebaseLogic = FirebaseLogicImpl(FirebaseRepositoryImpl(), applicationContext)
+        preferenceLogic = PreferenceLogicImpl(this)
 
         initToolBar()
         initDrawer()
@@ -117,7 +122,6 @@ abstract class AbstractAppActivity: AppCompatActivity() {
 
         // Upナビゲーションをアイコン(=Home)ボタンとしてふるまわせる
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setHomeAsUpIndicator(R.mipmap.ic_launcher)
     }
 
     /**
