@@ -5,13 +5,9 @@ import net.formula97.stacktask.misc.AppConstants
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TaskItemBuilder {
+class TaskItemBuilder(taskName: String) {
 
-    private var taskItem: TaskItem
-
-    constructor(taskName: String) {
-        this.taskItem = TaskItem(taskName)
-    }
+    private var taskItem: TaskItem = TaskItem(taskName)
 
     fun createAsDefault(user: FirebaseUser): TaskItem {
         userId(user)
