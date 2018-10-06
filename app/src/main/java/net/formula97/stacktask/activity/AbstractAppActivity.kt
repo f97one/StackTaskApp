@@ -1,16 +1,9 @@
 package net.formula97.stacktask.activity
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
-import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
-import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -18,7 +11,6 @@ import com.bumptech.glide.Glide
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.app_navigation_drawer.*
-import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.app_toolbar_layout.*
 import net.formula97.stacktask.R
 import net.formula97.stacktask.logic.FirebaseLogic
@@ -27,14 +19,10 @@ import net.formula97.stacktask.repository.impl.FirebaseRepositoryImpl
 
 abstract class AbstractAppActivity: AppCompatActivity() {
 
-    private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
-
-    private lateinit var firebaseLogic: FirebaseLogic
-
     /**
-     * 画面遷移フラグ
+     * Firebaseまわりのビジネスロジック、参照のみ可。
      */
-    private var permitViewFlip: Boolean = true
+    lateinit var firebaseLogic: FirebaseLogic private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +31,7 @@ abstract class AbstractAppActivity: AppCompatActivity() {
 
         firebaseLogic = FirebaseLogicImpl(FirebaseRepositoryImpl(), applicationContext)
 
+        initToolBar()
         initDrawer()
 
         onCreateImpl(savedInstanceState)
@@ -50,7 +39,6 @@ abstract class AbstractAppActivity: AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        permitViewFlip = true
 
         onResumeImpl()
     }
@@ -59,11 +47,6 @@ abstract class AbstractAppActivity: AppCompatActivity() {
      * NavigationDrawerを初期化する
      */
     private fun initDrawer() {
-        // NavigationDrawer 生成の前に ToolBarを初期化
-        setSupportActionBar(app_toolbar)
-
-        //app_drawer_layout.openDrawer(GravityCompat.START)
-
         // ヘッダに名前と画像を追加
         val currentUser = getUser()
 
@@ -125,31 +108,23 @@ abstract class AbstractAppActivity: AppCompatActivity() {
     }
 
     /**
+     * ToolBar初期化
+     */
+    open fun initToolBar() {
+        setSupportActionBar(app_toolbar)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
+        supportActionBar!!.setHomeButtonEnabled(true)
+
+        // Upナビゲーションをアイコン(=Home)ボタンとしてふるまわせる
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeAsUpIndicator(R.mipmap.ic_launcher)
+    }
+
+    /**
      * ログイン中のユーザー情報を返す。
      */
     fun getUser(): FirebaseUser? {
         return firebaseLogic.getCurrentUser()
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onPostCreate(savedInstanceState, persistentState)
-
-        // ActionBarの状態を同期する
-        actionBarDrawerToggle.syncState()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        // 開閉状態の同期
-        actionBarDrawerToggle.onConfigurationChanged(newConfig)
     }
 
     override fun onStop() {

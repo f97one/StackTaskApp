@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="net.formula97.stacktask.activity.LoginActivity">
+
+    <item
+        android:id="@+id/order_by_due_date"
+        android:title="@string/by_due_date"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/order_by_priority"
+        android:title="@string/by_priority"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/order_by_name"
+        android:title="@string/by_name"
+        app:showAsAction="never" />
+
+</menu>
