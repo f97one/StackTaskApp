@@ -19,5 +19,18 @@ class AppConstants {
          * 内部処理で使う時刻フォーマット
          */
         const val APP_STANDARD_DATETIME_FORMAT: String = "yyyyMMddHHmmss"
+
+        /**
+         * 期日順
+         */
+        const val ORDER_BY_DUE_DATE: Int = 10
+        /**
+         * 優先度順
+         */
+        const val ORDER_BY_PRIORIRY: Int = 11
+        /**
+         * 名前順
+         */
+        const val ORDER_BY_NAME: Int = 12
     }
 }
