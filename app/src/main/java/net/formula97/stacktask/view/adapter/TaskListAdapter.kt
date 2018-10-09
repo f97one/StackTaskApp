@@ -10,17 +10,17 @@ import net.formula97.stacktask.kind.TaskItem
 import net.formula97.stacktask.view.holder.TaskListViewHolder
 import java.util.*
 
-class TaskListAdapter(private var taskList: List<TaskItem>): RecyclerView.Adapter<TaskListViewHolder>() {
+class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView.Adapter<TaskListViewHolder>() {
 
-    interface OnItemClickLister: EventListener {
-        fun onItemClick(view: View, position: Int)
+    interface OnItemClickListener: EventListener {
+        fun onItemClick(view: View, position: Int, item: TaskItem)
     }
 
     interface OnItemCheckedChangeListener: EventListener {
-        fun onItemCheckedChange(view: View, position: Int, checked: Boolean)
+        fun onItemCheckedChange(view: View, position: Int, checked: Boolean, item: TaskItem)
     }
 
-    private lateinit var onItemClickLister: OnItemClickLister
+    private lateinit var onItemClickLister: OnItemClickListener
 
     private lateinit var onItemCheckedChangeListener: OnItemCheckedChangeListener
 
@@ -38,6 +38,7 @@ class TaskListAdapter(private var taskList: List<TaskItem>): RecyclerView.Adapte
 
         holder.itemTaskName.text = item.taskName
         holder.itemCompletedCheck.isChecked = item.finished
+        holder.itemDueDate.text = item.dueDate
 
         val textPaint = holder.itemTaskName.paint
         if (item.finished) {
@@ -50,29 +51,37 @@ class TaskListAdapter(private var taskList: List<TaskItem>): RecyclerView.Adapte
         }
         textPaint.isAntiAlias = true
 
-        holder.itemPriority.numStars = item.priority
+        holder.itemPriority.rating = item.priority.toFloat()
 
         // ItemClickListener
         holder.itemTaskName.setOnClickListener { view ->
-            onItemClickLister.onItemClick(view, position)
+            onItemClickLister.onItemClick(view, position, item)
         }
         holder.itemPriority.setOnClickListener { view ->
-            onItemClickLister.onItemClick(view, position)
+            onItemClickLister.onItemClick(view, position, item)
         }
         holder.itemDueDate.setOnClickListener { view ->
-            onItemClickLister.onItemClick(view, position)
+            onItemClickLister.onItemClick(view, position, item)
         }
 
         holder.itemCompletedCheck.setOnCheckedChangeListener { buttonView, isChecked ->
-            onItemCheckedChangeListener.onItemCheckedChange(buttonView, position, isChecked)
+            onItemCheckedChangeListener.onItemCheckedChange(buttonView, position, isChecked, item)
         }
     }
 
-    fun setOnItemClickLister(callback: OnItemClickLister) {
+    fun setOnItemClickLister(callback: OnItemClickListener) {
         onItemClickLister = callback
     }
 
     fun setOnItemCheckedChangeListener(callback: OnItemCheckedChangeListener) {
         onItemCheckedChangeListener = callback
+    }
+
+    fun addItem(taskItem: TaskItem) {
+        taskList.add(taskItem)
+    }
+
+    fun replaceItems(items: MutableList<TaskItem>) {
+        this.taskList = items
     }
 }
