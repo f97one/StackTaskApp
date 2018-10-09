@@ -88,6 +88,8 @@ abstract class AbstractAppActivity: AppCompatActivity() {
                 }
                 R.id.nav_setting -> {
                     // 設定画面を開く
+                    val i2 = Intent(applicationContext, AppConfigActivity::class.java)
+                    startActivity(i2)
                     result = true
                 }
                 R.id.nav_logout -> {
