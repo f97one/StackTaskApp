@@ -6,7 +6,7 @@ import java.util.*
 /**
  * タスクアイテム
  */
-data class TaskItem(var taskName: String) {
+data class TaskItem(var taskName: String = "") {
     /**
      * タスクID
      */
@@ -34,10 +34,10 @@ data class TaskItem(var taskName: String) {
     /**
      * 作成日
      */
-    var createdAt: Date? = null
+    var createdAt: Long = Calendar.getInstance().timeInMillis
     /**
      * 更新日
      */
-    var updatedAt: Date? = null
+    var updatedAt: Long = Calendar.getInstance().timeInMillis
 
 }

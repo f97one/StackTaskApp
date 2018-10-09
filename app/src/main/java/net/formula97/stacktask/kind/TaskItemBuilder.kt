@@ -7,7 +7,12 @@ import java.util.*
 
 class TaskItemBuilder(taskName: String) {
 
-    private var taskItem: TaskItem = TaskItem(taskName)
+    private var taskItem: TaskItem
+
+    init {
+        taskItem = TaskItem()
+        taskItem.taskName = taskName
+    }
 
     fun createAsDefault(user: FirebaseUser): TaskItem {
         userId(user)
@@ -81,12 +86,24 @@ class TaskItemBuilder(taskName: String) {
     }
 
     fun createdAt(createdAt: Date): TaskItemBuilder {
+        taskItem.createdAt = createdAt.time
+
+        return this
+    }
+
+    fun createdAt(createdAt: Long): TaskItemBuilder {
         taskItem.createdAt = createdAt
 
         return this
     }
 
     fun updatedAt(updatedAt: Date): TaskItemBuilder {
+        taskItem.updatedAt = updatedAt.time
+
+        return this
+    }
+
+    fun updatedAt(updatedAt: Long): TaskItemBuilder {
         taskItem.updatedAt = updatedAt
 
         return this

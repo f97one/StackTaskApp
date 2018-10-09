@@ -33,8 +33,8 @@ class TaskItemBuilderTest {
         val current: Long = Date().time
 
         // 1秒未満ならOKとする
-        assertThat(current - result.createdAt!!.time, lessThan(1000L))
-        assertThat(current - result.updatedAt!!.time, lessThan(1000L))
+        assertThat(current - result.createdAt, lessThan(1000L))
+        assertThat(current - result.updatedAt, lessThan(1000L))
     }
 
     @Test
@@ -67,8 +67,8 @@ class TaskItemBuilderTest {
         assertThat(result.finished, `is`(true))
         assertThat(result.taskId, `is`(testTaskId))
         assertThat(result.dueDate, startsWith(dueDate))
-        assertThat(d.time - result.createdAt!!.time, lessThan(1000L))
-        assertThat(d.time - result.updatedAt!!.time, lessThan(1000L))
+        assertThat(d.time - result.createdAt, lessThan(1000L))
+        assertThat(d.time - result.updatedAt, lessThan(1000L))
     }
 
     @Test
@@ -102,7 +102,7 @@ class TaskItemBuilderTest {
         assertThat(result.finished, `is`(true))
         assertThat(result.taskId, `is`(testTaskId))
         assertThat(result.dueDate, startsWith(dd))
-        assertThat(created.time - result.createdAt!!.time, lessThan(1000L))
-        assertThat(updated.time - result.updatedAt!!.time, lessThan(1000L))
+        assertThat(created.time - result.createdAt, lessThan(1000L))
+        assertThat(updated.time - result.updatedAt, lessThan(1000L))
     }
 }
