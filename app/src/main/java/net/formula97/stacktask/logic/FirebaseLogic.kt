@@ -5,6 +5,7 @@ import net.formula97.stacktask.kind.TaskItem
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
 import java.util.*
 
 interface FirebaseLogic {
@@ -28,8 +29,11 @@ interface FirebaseLogic {
 
     fun logout(callback: FirebaseLogic.OnSignInFinishedListener)
 
-    fun readTasks(uid: String): List<TaskItem>
+    fun readTasks(uid: String, orderBy: TaskOrder): List<TaskItem>
     fun addTask(taskItem: TaskItem)
     fun updateTask(taskitem: TaskItem)
 
+    fun changeOrder(taskList: List<TaskItem>, orderBy: TaskOrder): MutableList<TaskItem>
+
+    fun getReference(): DatabaseReference
 }

@@ -7,13 +7,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.DatabaseReference
 import kotlinx.coroutines.experimental.launch
 import net.formula97.stacktask.R
 import net.formula97.stacktask.kind.TaskItem
 import net.formula97.stacktask.logic.FirebaseLogic
+import net.formula97.stacktask.logic.TaskOrder
 import net.formula97.stacktask.repository.FirebaseRepository
 
 class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepository, private val context: Context) : FirebaseLogic {
@@ -62,8 +65,10 @@ class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepo
         return FirebaseAuth.getInstance().currentUser
     }
 
-    override fun readTasks(uid: String): List<TaskItem> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun readTasks(uid: String, orderBy: TaskOrder): List<TaskItem> {
+        val rawTaskList: MutableList<TaskItem> = firebaseRepository.readTasksOnce(uid)
+
+        return changeOrder(rawTaskList.toList(), orderBy)
     }
 
     override fun addTask(taskItem: TaskItem) {
@@ -72,5 +77,41 @@ class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepo
 
     override fun updateTask(taskitem: TaskItem) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun changeOrder(taskList: List<TaskItem>, orderBy: TaskOrder): MutableList<TaskItem> {
+        val mutableList: MutableList<TaskItem> = mutableListOf()
+        mutableList.addAll(taskList)
+
+        when (orderBy.rawValue) {
+            TaskOrder.ByDueDate.rawValue -> {
+                mutableList.sortedWith(compareByDescending<TaskItem> { it.dueDate }
+                        .thenByDescending { it.priority }
+                        .thenBy { it.taskName }
+                )
+            }
+            TaskOrder.ByPriority.rawValue -> {
+                mutableList.sortedWith(compareByDescending<TaskItem> { it.priority }
+                        .thenByDescending { it.dueDate }
+                        .thenBy { it.taskName })
+            }
+            TaskOrder.ByName.rawValue -> {
+                mutableList.sortedWith(compareBy<TaskItem> { it.taskName }
+                        .thenByDescending { it.dueDate }
+                        .thenByDescending { it.priority })
+            }
+            else -> {
+                mutableList.sortedWith(compareByDescending<TaskItem> { it.dueDate }
+                        .thenByDescending { it.priority }
+                        .thenBy { it.taskName }
+                )
+            }
+        }
+
+        return mutableList
+    }
+
+    override fun getReference(): DatabaseReference {
+        return firebaseRepository.getReference()
     }
 }
