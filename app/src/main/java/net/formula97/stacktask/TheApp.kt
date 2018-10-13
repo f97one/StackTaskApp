@@ -1,6 +1,7 @@
 package net.formula97.stacktask
 
 import android.app.Application
+import com.google.firebase.database.FirebaseDatabase
 
 class TheApp : Application() {
 
@@ -9,6 +10,7 @@ class TheApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
 //        appComponet = DaggerAppComponent.builder()
 //                .appModule(AppModule(this))
 //                .logicModule(LogicModule())
