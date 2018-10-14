@@ -18,4 +18,6 @@
     <string name="priority_label">Priority</string>
     <string name="add_task">Add Task</string>
     <string name="edit_task">Edit Task</string>
+    <string name="task_will_be_completed">This task will be completed. Is it OK?</string>
+    <string name="confirm">Confirm</string>
 </resources>

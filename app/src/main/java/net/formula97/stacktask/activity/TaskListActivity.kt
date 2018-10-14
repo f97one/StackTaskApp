@@ -1,5 +1,6 @@
 package net.formula97.stacktask.activity
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
@@ -14,21 +15,23 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_task_list.*
 //import kotlinx.android.synthetic.main.app_navigation_drawer.*
 import net.formula97.stacktask.R
+import net.formula97.stacktask.fragment.MsgDialogFragment
 import net.formula97.stacktask.kind.TaskItem
-import net.formula97.stacktask.logic.TaskOrder
 import net.formula97.stacktask.misc.AppConstants
 import net.formula97.stacktask.view.adapter.TaskListAdapter
+import java.util.*
 
 
 class TaskListActivity : AbstractAppActivity() {
 
     private var taskItemList = mutableListOf<TaskItem>()
-    private var taskListAdapter = TaskListAdapter(taskItemList)
+
+    private var tmpTaskOrder: Int = AppConstants.ORDER_BY_DUE_DATE
 
     override fun onStart() {
         super.onStart()
 
-        createTaskListView(mutableListOf())
+        createTaskListView()
         startFetchingData()
     }
 
@@ -56,27 +59,13 @@ class TaskListActivity : AbstractAppActivity() {
             startActivity(intent)
         }
 
+        createTaskListView()
+
+        tmpTaskOrder = preferenceLogic.getTaskOrder()
     }
 
-    private fun createTaskListView(taskList: MutableList<TaskItem>) {
-        val taskOrder = when (preferenceLogic.getTaskOrder()) {
-            AppConstants.ORDER_BY_DUE_DATE -> {
-                TaskOrder.ByDueDate
-            }
-            AppConstants.ORDER_BY_PRIORIRY -> {
-                TaskOrder.ByPriority
-            }
-            AppConstants.ORDER_BY_NAME -> {
-                TaskOrder.ByName
-            }
-            else -> {
-                TaskOrder.ByDueDate
-            }
-        }
-
-        val list = firebaseLogic.changeOrder(taskList, taskOrder)
-
-        taskListAdapter.replaceItems(list)
+    private fun createTaskListView() {
+        val taskListAdapter = TaskListAdapter(taskItemList)
 
         taskListAdapter.setOnItemClickLister(object : TaskListAdapter.OnItemClickListener {
             override fun onItemClick(view: View, position: Int, item: TaskItem) {
@@ -86,12 +75,48 @@ class TaskListActivity : AbstractAppActivity() {
         taskListAdapter.setOnItemCheckedChangeListener(object : TaskListAdapter.OnItemCheckedChangeListener {
             override fun onItemCheckedChange(view: View, position: Int, checked: Boolean, item: TaskItem) {
                 Log.d("RecyclerView#onItemCheckedChange", "アイテムのチェックボックスが押された")
+
+                val showConfirm: Boolean = preferenceLogic.isShowConfirmDialog()
+
+                if (showConfirm && checked && !item.finished) {
+                    val dialog: MsgDialogFragment = MsgDialogFragment.getInstance(getString(R.string.task_will_be_completed), getString(R.string.confirm))
+                    dialog.setButtonListener(object : MsgDialogFragment.OnDialogButtonClickListener {
+                        override fun onDialogButtonClick(which: Int) {
+                            if (which == DialogInterface.BUTTON_POSITIVE) {
+                                postCompleteState(item, checked, position)
+                            } else {
+                                // チェックボックスの表示を戻す
+                                val adapter: TaskListAdapter = task_item_list.adapter as TaskListAdapter
+                                adapter.notifyItemChanged(position, item)
+                            }
+                        }
+                    })
+
+                    dialog.show(supportFragmentManager, MsgDialogFragment.DIALOG_TAG)
+
+                } else {
+                    postCompleteState(item, checked, position)
+                }
+
+            }
+
+            private fun postCompleteState(item: TaskItem, checked: Boolean, position: Int) {
+                item.finished = checked
+                item.updatedAt = Date().time
+
+                updateItem(position, item)
+                firebaseLogic.updateTask(item)
             }
         })
         task_item_list.layoutManager = LinearLayoutManager(this)
         task_item_list.setHasFixedSize(true)
 
         task_item_list.adapter = taskListAdapter
+    }
+
+    private fun updateItem(position: Int, item: TaskItem) {
+        val adapter: TaskListAdapter = task_item_list.adapter as TaskListAdapter
+        adapter.replaceItem(position, item)
     }
 
     override fun inflateLayout() {
@@ -117,18 +142,21 @@ class TaskListActivity : AbstractAppActivity() {
                 true
             }
             R.id.order_by_due_date -> {
-                // TODO 並べ替え処理を書く
                 Log.d("ToolBar#onItemClick", "期日で並べ替える")
+                tmpTaskOrder = AppConstants.ORDER_BY_DUE_DATE
+                invalidateList(tmpTaskOrder)
                 true
             }
             R.id.order_by_priority -> {
-                // TODO 並べ替え処理を書く
                 Log.d("ToolBar#onItemClick", "優先度で並べ替える")
+                tmpTaskOrder = AppConstants.ORDER_BY_PRIORIRY
+                invalidateList(tmpTaskOrder)
                 true
             }
             R.id.order_by_name -> {
-                // TODO 並べ替え処理を書く
                 Log.d("ToolBar#onItemClick", "名前で並べ替える")
+                tmpTaskOrder = AppConstants.ORDER_BY_NAME
+                invalidateList(tmpTaskOrder)
                 true
             }
             else -> {
@@ -138,6 +166,17 @@ class TaskListActivity : AbstractAppActivity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putInt("tmpTaskOrder", tmpTaskOrder)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        tmpTaskOrder = savedInstanceState?.getInt("tmpTaskOrder") ?: preferenceLogic.getTaskOrder()
+    }
+
     private var fetchCallback: ValueEventListener = object : ValueEventListener {
         override fun onCancelled(databaseError: DatabaseError) {
 
@@ -145,13 +184,22 @@ class TaskListActivity : AbstractAppActivity() {
 
         override fun onDataChange(dataSnapshot: DataSnapshot) {
             for (snapshot in dataSnapshot.children) {
+                val key = snapshot.key
                 val i = snapshot.getValue(TaskItem::class.java)
                 if (i != null) {
+                    i.taskId = key!!
                     taskItemList.add(i)
                 }
             }
 
-            createTaskListView(taskItemList)
+            invalidateList(tmpTaskOrder)
         }
+    }
+
+    private fun invalidateList(orderBy: Int) {
+        val itemList = firebaseLogic.changeOrder(taskItemList, orderBy)
+
+        val adapter: TaskListAdapter = task_item_list.adapter as TaskListAdapter
+        adapter.replaceItems(itemList)
     }
 }
