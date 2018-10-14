@@ -29,11 +29,11 @@ interface FirebaseLogic {
 
     fun logout(callback: FirebaseLogic.OnSignInFinishedListener)
 
-    fun readTasks(uid: String, orderBy: TaskOrder): List<TaskItem>
+    fun readTasks(uid: String, orderBy: Int): List<TaskItem>
     fun addTask(taskItem: TaskItem)
     fun updateTask(taskitem: TaskItem)
 
-    fun changeOrder(taskList: List<TaskItem>, orderBy: TaskOrder): MutableList<TaskItem>
+    fun changeOrder(taskList: List<TaskItem>, orderBy: Int): MutableList<TaskItem>
 
     fun getReference(): DatabaseReference
 }

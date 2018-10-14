@@ -1,6 +1,7 @@
 package net.formula97.stacktask.repository.impl
 
 import android.util.Log
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.database.*
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.GlobalScope
@@ -72,12 +73,55 @@ class FirebaseRepositoryImpl: FirebaseRepository {
         }
     }
 
-    override fun addTask(taskItem: TaskItem) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun addTask(taskItem: TaskItem): String {
+        val key = database.push().key
+
+        taskItem.taskId = key!!
+        val taskMap: HashMap<String, Any?> = kindToMap(taskItem)
+
+        val childUpdateMap: HashMap<String, Any?> = HashMap()
+        childUpdateMap[key] = taskMap
+
+        database.updateChildren(childUpdateMap)
+                .addOnSuccessListener {
+                    Log.d("", "追加成功")
+                }
+                .addOnFailureListener { exception ->
+                    Log.w("", exception)
+                }
+
+        return key
     }
 
     override fun updateTask(taskitem: TaskItem) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val taskMap: HashMap<String, Any?> = kindToMap(taskitem)
+
+        val key = taskitem.taskId
+
+        val childUpdateMap: HashMap<String, Any?> = HashMap()
+        childUpdateMap[key] = taskMap
+
+        database.updateChildren(childUpdateMap)
+                .addOnSuccessListener {
+                    Log.d("", "更新成功")
+                }
+                .addOnFailureListener { exception ->
+                    Log.w("", exception)
+                }
+    }
+
+    private fun kindToMap(taskitem: TaskItem): HashMap<String, Any?> {
+        val taskMap: HashMap<String, Any?> = HashMap()
+        taskMap["taskId"] = taskitem.taskId
+        taskMap["userId"] = taskitem.userId
+        taskMap["taskName"] = taskitem.taskName
+        taskMap["dueDate"] = taskitem.dueDate
+        taskMap["priority"] = taskitem.priority
+        taskMap["taskDetail"] = taskitem.taskDetail
+        taskMap["finished"] = taskitem.finished
+        taskMap["createdAt"] = taskitem.createdAt
+        taskMap["updatedAt"] = taskitem.updatedAt
+        return taskMap
     }
 
     override fun getReference(): DatabaseReference {

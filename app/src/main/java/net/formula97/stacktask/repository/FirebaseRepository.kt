@@ -6,7 +6,7 @@ import net.formula97.stacktask.kind.TaskItem
 
 interface FirebaseRepository {
     fun readTasksOnce(uid: String): MutableList<TaskItem>
-    fun addTask(taskItem: TaskItem)
+    fun addTask(taskItem: TaskItem): String
     fun updateTask(taskitem: TaskItem)
     fun getReference(): DatabaseReference
 }
