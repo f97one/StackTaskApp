@@ -9,8 +9,51 @@ import net.formula97.stacktask.R
 import net.formula97.stacktask.kind.TaskItem
 import net.formula97.stacktask.view.holder.TaskListViewHolder
 import java.util.*
+import kotlin.Comparator
+import kotlin.concurrent.withLock
 
-class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView.Adapter<TaskListViewHolder>() {
+class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView.Adapter<TaskListViewHolder>(), RecyclerViewAdapterOperators<TaskItem> {
+    override fun getItem(position: Int): TaskItem {
+        return taskList[position]
+    }
+
+    override fun remove(item: TaskItem) {
+        reentrantLock.withLock {
+            val position = taskList.indexOf(item)
+            taskList.removeAt(position)
+            notifyItemRemoved(position)
+        }
+    }
+
+    override fun sort(comparator: Comparator<TaskItem>) {
+        reentrantLock.withLock {
+            Collections.sort(taskList, comparator)
+            notifyDataSetChanged()
+        }
+    }
+
+    override fun reverse() {
+        reentrantLock.withLock {
+            taskList.reverse()
+            notifyDataSetChanged()
+        }
+    }
+
+    override fun clear(refresh: Boolean) {
+        reentrantLock.withLock {
+            taskList.clear()
+            if (refresh) {
+                notifyDataSetChanged()
+            }
+        }
+    }
+
+    override fun addAll(dataset: MutableList<TaskItem>) {
+        reentrantLock.withLock {
+            taskList.addAll(dataset)
+            notifyDataSetChanged()
+        }
+    }
 
     interface OnItemClickListener: EventListener {
         fun onItemClick(view: View, position: Int, item: TaskItem)
@@ -63,6 +106,9 @@ class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView
         holder.itemDueDate.setOnClickListener { view ->
             onItemClickLister.onItemClick(view, position, item)
         }
+        holder.taskItemLayout.setOnClickListener { v ->
+            onItemClickLister.onItemClick(v, position, item)
+        }
 
         holder.itemCompletedCheck.setOnCheckedChangeListener { buttonView, isChecked ->
             onItemCheckedChangeListener.onItemCheckedChange(buttonView, position, isChecked, item)
@@ -77,11 +123,35 @@ class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView
         onItemCheckedChangeListener = callback
     }
 
-    fun addItem(taskItem: TaskItem) {
-        taskList.add(taskItem)
+    override fun addItem(item: TaskItem) {
+        reentrantLock.withLock {
+            taskList.add(item)
+            notifyItemInserted(itemCount)
+        }
+    }
+
+    fun addItem(indexOf: Int, taskItem: TaskItem) {
+        reentrantLock.withLock {
+            taskList.add(indexOf, taskItem)
+            notifyItemInserted(indexOf)
+        }
+    }
+
+    fun replaceItem(index: Int, item: TaskItem) {
+        reentrantLock.withLock {
+            taskList[index] = item
+            notifyItemChanged(index)
+        }
     }
 
     fun replaceItems(items: MutableList<TaskItem>) {
-        this.taskList = items
+        reentrantLock.withLock {
+            this.taskList = items
+            notifyDataSetChanged()
+        }
+    }
+
+    override fun indexOf(item: TaskItem): Int {
+        return taskList.indexOf(item)
     }
 }
