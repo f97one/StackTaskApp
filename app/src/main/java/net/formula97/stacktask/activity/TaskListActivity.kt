@@ -1,9 +1,12 @@
 package net.formula97.stacktask.activity
 
+//import kotlinx.android.synthetic.main.app_navigation_drawer.*
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
+import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Menu
@@ -13,7 +16,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_task_list.*
-//import kotlinx.android.synthetic.main.app_navigation_drawer.*
 import net.formula97.stacktask.R
 import net.formula97.stacktask.fragment.MsgDialogFragment
 import net.formula97.stacktask.kind.TaskItem
@@ -69,12 +71,15 @@ class TaskListActivity : AbstractAppActivity() {
 
         taskListAdapter.setOnItemClickLister(object : TaskListAdapter.OnItemClickListener {
             override fun onItemClick(view: View, position: Int, item: TaskItem) {
-                Log.d("RecyclerView#onItemClick", "アイテムを押された")
+                Log.d("onItemClick", "アイテムを押された")
+                val intent = Intent(applicationContext, TaskEditorActivity::class.java)
+                intent.putExtra(TaskEditorActivity.EXTRA_TASK_ITEM, item)
+                startActivity(intent)
             }
         })
         taskListAdapter.setOnItemCheckedChangeListener(object : TaskListAdapter.OnItemCheckedChangeListener {
             override fun onItemCheckedChange(view: View, position: Int, checked: Boolean, item: TaskItem) {
-                Log.d("RecyclerView#onItemCheckedChange", "アイテムのチェックボックスが押された")
+                Log.d("onItemCheckedChange", "アイテムのチェックボックスが押された")
 
                 val showConfirm: Boolean = preferenceLogic.isShowConfirmDialog()
 
@@ -128,6 +133,32 @@ class TaskListActivity : AbstractAppActivity() {
 
         supportActionBar!!.title = getString(R.string.task_list)
         supportActionBar!!.setHomeAsUpIndicator(R.mipmap.ic_launcher)
+
+        drawerToggle = object : ActionBarDrawerToggle(this, app_drawer_layout, R.string.drawer_open, R.string.drawer_close) {
+            override fun onDrawerOpened(drawerView: View) {
+                super.onDrawerOpened(drawerView)
+                add_task_btn.isEnabled = false
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                super.onDrawerClosed(drawerView)
+                add_task_btn.isEnabled = true
+            }
+        }
+
+        app_drawer_layout.addDrawerListener(drawerToggle)
+    }
+
+    private lateinit var drawerToggle: ActionBarDrawerToggle
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        drawerToggle.syncState()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        drawerToggle.onConfigurationChanged(newConfig)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

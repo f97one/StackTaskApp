@@ -2,15 +2,16 @@ package net.formula97.stacktask.activity
 
 import android.os.Bundle
 import net.formula97.stacktask.R
+import net.formula97.stacktask.kind.TaskItem
 
 class TaskEditorActivity : AbstractAppActivity() {
 
-    private var receivedTaskId: String? = null
+    private var receivedTaskItem: TaskItem? = null
 
-    private val taskIdKey = "taskIdKey"
+    private val taskItemKey = "taskItemKey"
 
     companion object {
-        const val EXTRA_TASK_ID: String = "EXTRA_TASK_ID"
+        const val EXTRA_TASK_ITEM: String = "EXTRA_TASK_ITEM"
     }
 
     override fun inflateLayout() {
@@ -28,9 +29,9 @@ class TaskEditorActivity : AbstractAppActivity() {
     override fun initToolBar() {
         super.initToolBar()
 
-        receivedTaskId = intent.getStringExtra(EXTRA_TASK_ID)
+        receivedTaskItem = intent.getSerializableExtra(EXTRA_TASK_ITEM) as TaskItem?
 
-        if (receivedTaskId == null) {
+        if (receivedTaskItem == null) {
             supportActionBar!!.title = getString(R.string.add_task)
         } else {
             supportActionBar!!.title = getString(R.string.edit_task)
@@ -39,11 +40,11 @@ class TaskEditorActivity : AbstractAppActivity() {
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        outState!!.putString(taskIdKey, receivedTaskId)
+        outState!!.putSerializable(taskItemKey, receivedTaskItem)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        receivedTaskId = savedInstanceState!!.getString(taskIdKey)
+        receivedTaskItem = savedInstanceState!!.getSerializable(taskItemKey) as TaskItem?
     }
 }
