@@ -1,12 +1,13 @@
 package net.formula97.stacktask.kind
 
 import net.formula97.stacktask.misc.AppConstants
+import java.io.Serializable
 import java.util.*
 
 /**
  * タスクアイテム
  */
-data class TaskItem(var taskName: String = "") {
+data class TaskItem(var taskName: String = "") : Serializable {
     /**
      * タスクID
      */
