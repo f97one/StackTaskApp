@@ -20,4 +20,9 @@
     <string name="edit_task">Edit Task</string>
     <string name="task_will_be_completed">This task will be completed. Is it OK?</string>
     <string name="confirm">Confirm</string>
+    <string name="task_name">Task Name</string>
+    <string name="due_date">Due Date</string>
+    <string name="priority">Priority</string>
+    <string name="details">Details</string>
+    <string name="done">Done</string>
 </resources>
