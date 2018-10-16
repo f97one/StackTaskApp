@@ -18,7 +18,7 @@ class AppConstants {
         /**
          * 内部処理で使う時刻フォーマット
          */
-        const val APP_STANDARD_DATETIME_FORMAT: String = "yyyyMMddHHmmss"
+        const val APP_STANDARD_DATETIME_FORMAT: String = "yyyy/MM/dd HH:mm"
 
         /**
          * 期日順

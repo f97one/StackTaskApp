@@ -77,7 +77,7 @@ class TaskItemBuilderTest {
 
         // タスクID
         val testTaskId = UUID.randomUUID().toString()
-        val dd = "20180930153924"
+        val dd = "2018/09/30 15:39"
         val cal = Calendar.getInstance()
         val created = cal.time
         cal.add(Calendar.DAY_OF_MONTH, 3)
