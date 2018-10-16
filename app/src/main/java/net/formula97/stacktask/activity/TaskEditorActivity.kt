@@ -1,14 +1,20 @@
 package net.formula97.stacktask.activity
 
 import android.os.Bundle
+import android.view.View
+import kotlinx.android.synthetic.main.activity_task_editor.*
 import net.formula97.stacktask.R
 import net.formula97.stacktask.kind.TaskItem
+import net.formula97.stacktask.kind.TaskItemBuilder
 
 class TaskEditorActivity : AbstractAppActivity() {
 
     private var receivedTaskItem: TaskItem? = null
+    private lateinit var editorTaskItem: TaskItem
+    private var hideDone: Boolean = false
 
     private val taskItemKey = "taskItemKey"
+    private val hideDoneKey = "hideDoneKey"
 
     companion object {
         const val EXTRA_TASK_ITEM: String = "EXTRA_TASK_ITEM"
@@ -19,11 +25,28 @@ class TaskEditorActivity : AbstractAppActivity() {
     }
 
     override fun onCreateImpl(savedInstanceState: Bundle?) {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (receivedTaskItem == null) {
+            editorTaskItem = TaskItemBuilder("").createAsDefault(firebaseLogic.getCurrentUser()!!)
+            hideDone = true
+        } else {
+            editorTaskItem = receivedTaskItem as TaskItem
+            hideDone = false
+        }
+
     }
 
     override fun onResumeImpl() {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        editor_done.visibility = if (hideDone) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
+
+        editor_task_name.setText(editorTaskItem.taskName)
+        editor_due_date.text = editorTaskItem.dueDate
+        editor_priority.rating = editorTaskItem.priority.toFloat()
+        editor_details.setText(editorTaskItem.taskDetail)
+        editor_done.isChecked = editorTaskItem.finished
     }
 
     override fun initToolBar() {
@@ -40,11 +63,20 @@ class TaskEditorActivity : AbstractAppActivity() {
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        outState!!.putSerializable(taskItemKey, receivedTaskItem)
+
+        editorTaskItem.taskName = editor_task_name.text.toString()
+        editorTaskItem.dueDate = editor_due_date.text.toString()
+        editorTaskItem.priority = editor_priority.rating.toInt()
+        editorTaskItem.taskDetail = editor_details.text.toString()
+        editorTaskItem.finished = editor_done.isChecked
+
+        outState!!.putSerializable(taskItemKey, editorTaskItem)
+        outState.putBoolean(hideDoneKey, hideDone)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        receivedTaskItem = savedInstanceState!!.getSerializable(taskItemKey) as TaskItem?
+        editorTaskItem = savedInstanceState!!.getSerializable(taskItemKey) as TaskItem
+        hideDone = savedInstanceState.getBoolean(hideDoneKey)
     }
 }

@@ -88,7 +88,7 @@ class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepo
                         .thenBy { it.taskName }
                 )
             }
-            AppConstants.ORDER_BY_PRIORIRY -> {
+            AppConstants.ORDER_BY_PRIORITY -> {
                 mutableList.sortedWith(compareByDescending<TaskItem> { it.priority }
                         .thenByDescending { it.dueDate }
                         .thenBy { it.taskName })

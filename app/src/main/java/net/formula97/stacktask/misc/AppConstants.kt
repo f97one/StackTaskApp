@@ -27,7 +27,7 @@ class AppConstants {
         /**
          * 優先度順
          */
-        const val ORDER_BY_PRIORIRY: Int = 11
+        const val ORDER_BY_PRIORITY: Int = 11
         /**
          * 名前順
          */

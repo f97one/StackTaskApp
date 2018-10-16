@@ -180,7 +180,7 @@ class TaskListActivity : AbstractAppActivity() {
             }
             R.id.order_by_priority -> {
                 Log.d("ToolBar#onItemClick", "優先度で並べ替える")
-                tmpTaskOrder = AppConstants.ORDER_BY_PRIORIRY
+                tmpTaskOrder = AppConstants.ORDER_BY_PRIORITY
                 invalidateList(tmpTaskOrder)
                 true
             }

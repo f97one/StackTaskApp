@@ -21,7 +21,7 @@ class PreferenceLogicImpl(context: Context): PreferenceLogic {
 
     override fun putTaskOrder(taskOrderFlag: Int) {
         when (taskOrderFlag) {
-            AppConstants.ORDER_BY_DUE_DATE, AppConstants.ORDER_BY_PRIORIRY, AppConstants.ORDER_BY_NAME -> {
+            AppConstants.ORDER_BY_DUE_DATE, AppConstants.ORDER_BY_PRIORITY, AppConstants.ORDER_BY_NAME -> {
                 preferenceRepository.putTaskOrder(taskOrderFlag)
             }
             else -> {
