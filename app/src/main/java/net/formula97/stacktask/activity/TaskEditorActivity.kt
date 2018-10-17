@@ -1,9 +1,13 @@
 package net.formula97.stacktask.activity
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_task_editor.*
 import net.formula97.stacktask.R
+import net.formula97.stacktask.fragment.DateTimePickerFragment
 import net.formula97.stacktask.kind.TaskItem
 import net.formula97.stacktask.kind.TaskItemBuilder
 import net.formula97.stacktask.misc.AppConstants
@@ -15,6 +19,7 @@ class TaskEditorActivity : AbstractAppActivity() {
     private lateinit var editorTaskItem: TaskItem
     private var hideDone: Boolean = false
     private var editorCalendar: Calendar = Calendar.getInstance()
+    private var tmpCalendar: Calendar = Calendar.getInstance()
 
     private val taskItemKey = "taskItemKey"
     private val hideDoneKey = "hideDoneKey"
@@ -42,6 +47,82 @@ class TaskEditorActivity : AbstractAppActivity() {
         }
 
         submit_task_btn.setImageResource(btnResId)
+
+        // 入力文字数の反映
+        val textWatcher = object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if ( s != null) {
+                    val len = s.toString().length
+
+                    current_length.text = len.toString()
+
+                    if (len > 180) {
+                        current_length.setTextColor(resources.getColor(android.R.color.holo_red_light))
+                    } else {
+                        current_length.setTextColor(resources.getColor(android.R.color.black))
+                    }
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // nothing to do
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // nothing to do
+            }
+        }
+
+        editor_details.addTextChangedListener(textWatcher)
+
+        submit_task_btn.setOnClickListener { _ ->
+            val taskName = editor_task_name.text.toString()
+            val taskDetail = editor_details.text.toString()
+
+            // 文字数検証
+            if (taskName.length > 32) {
+                Toast.makeText(applicationContext, R.string.exceed_32_chars, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (taskDetail.length > 200) {
+                Toast.makeText(applicationContext, R.string.exceed_200_chars, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (preferenceLogic.isShowConfirmDialog()) {
+                // TODO 確認ダイアログを出す処理を書く
+            } else {
+                collectFromView()
+
+                editorTaskItem.updatedAt = Date().time
+
+                if (hideDone) {
+                    editorTaskItem.createdAt = Date().time
+                    firebaseLogic.addTask(editorTaskItem)
+                } else {
+                    firebaseLogic.updateTask(editorTaskItem)
+                }
+            }
+
+        }
+
+        editor_due_date.setOnClickListener { _ ->
+            val simpleDateFormat = SimpleDateFormat(AppConstants.APP_STANDARD_DATETIME_FORMAT, Locale.getDefault())
+            val date = simpleDateFormat.parse(editorTaskItem.dueDate)
+            val cal = Calendar.getInstance()
+            cal.timeInMillis = date.time
+
+            val dialog: DateTimePickerFragment = DateTimePickerFragment.create(cal)
+            val callback = object : DateTimePickerFragment.OnDateTimeSetListener {
+                override fun onDateTimeSet(calendar: Calendar) {
+                    editorCalendar = calendar
+                    editorTaskItem.dueDate = simpleDateFormat.format(calendar.time)
+                }
+            }
+            dialog.setOnDateTimeSetListener(callback)
+
+            dialog.show(supportFragmentManager, DateTimePickerFragment.FRAGMENT_TAG)
+        }
     }
 
     override fun onResumeImpl() {
@@ -78,15 +159,19 @@ class TaskEditorActivity : AbstractAppActivity() {
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
 
+        collectFromView()
+
+        outState!!.putSerializable(taskItemKey, editorTaskItem)
+        outState.putBoolean(hideDoneKey, hideDone)
+        outState.putSerializable(editorCalendarKey, editorCalendar)
+    }
+
+    private fun collectFromView() {
         editorTaskItem.taskName = editor_task_name.text.toString()
         editorTaskItem.dueDate = editor_due_date.text.toString()
         editorTaskItem.priority = editor_priority.rating.toInt()
         editorTaskItem.taskDetail = editor_details.text.toString()
         editorTaskItem.finished = editor_done.isChecked
-
-        outState!!.putSerializable(taskItemKey, editorTaskItem)
-        outState.putBoolean(hideDoneKey, hideDone)
-        outState.putSerializable(editorCalendarKey, editorCalendar)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
