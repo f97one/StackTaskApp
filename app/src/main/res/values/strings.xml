@@ -25,4 +25,7 @@
     <string name="priority">Priority</string>
     <string name="details">Details</string>
     <string name="done">Done</string>
+    <string name="exceed_32_chars">Task name must be 32 characters or less.</string>
+    <string name="exceed_200_chars">Details must be 200 characters or less.</string>
+    <string name="determine">Determine</string>
 </resources>
