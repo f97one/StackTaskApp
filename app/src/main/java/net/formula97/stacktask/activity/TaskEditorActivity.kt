@@ -117,6 +117,8 @@ class TaskEditorActivity : AbstractAppActivity() {
                 override fun onDateTimeSet(calendar: Calendar) {
                     editorCalendar = calendar
                     editorTaskItem.dueDate = simpleDateFormat.format(calendar.time)
+
+                    editor_due_date.text = editorTaskItem.dueDate
                 }
             }
             dialog.setOnDateTimeSetListener(callback)
