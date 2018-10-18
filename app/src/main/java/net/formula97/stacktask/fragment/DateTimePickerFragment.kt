@@ -50,14 +50,13 @@ class DateTimePickerFragment: DialogFragment() {
         val builder = AlertDialog.Builder(activity!!)
         val bodyView = View.inflate(activity!!, R.layout.date_time_picker_dialog, null)
 
-        val dateView = bodyView.findViewById<DatePicker>(R.id.date_view)
-        val timeView = bodyView.findViewById<TimePicker>(R.id.time_view)
+        val dateView = bodyView.findViewById(R.id.date_view) as DatePicker
+        val timeView = bodyView.findViewById(R.id.time_view) as TimePicker
 
         val retCalendar = Calendar.getInstance()
         retCalendar.timeInMillis = currentCalendar.timeInMillis
 
         dateView.init(year, month, dayOfMonth) { _, yyyy, mm, dd ->
-            // TODO 年月日取得後の処理を書く
             retCalendar.set(Calendar.YEAR, yyyy)
             retCalendar.set(Calendar.MONTH, mm)
             retCalendar.set(Calendar.DAY_OF_MONTH, dd)
@@ -74,11 +73,8 @@ class DateTimePickerFragment: DialogFragment() {
         }
 
         timeView.setOnTimeChangedListener { _, hh, mm ->
-            // TODO 時分取得後の処理を書く
             retCalendar.set(Calendar.HOUR_OF_DAY, hh)
             retCalendar.set(Calendar.MINUTE, mm)
-            dateView.visibility = View.VISIBLE
-            timeView.visibility = View.GONE
         }
 
         builder.setView(bodyView)
