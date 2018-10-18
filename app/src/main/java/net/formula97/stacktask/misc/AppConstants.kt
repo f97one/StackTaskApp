@@ -32,5 +32,13 @@ class AppConstants {
          * 名前順
          */
         const val ORDER_BY_NAME: Int = 12
+        /**
+         * 処理タイプ：追加
+         */
+        const val SUBMIT_ADD = "add"
+        /**
+         * 処理タイプ：更新
+         */
+        const val SUBMIT_UPDATE = "update"
     }
 }
