@@ -31,7 +31,7 @@ interface FirebaseLogic {
 
     fun readTasks(uid: String, orderBy: Int): List<TaskItem>
     fun addTask(taskItem: TaskItem)
-    fun updateTask(taskitem: TaskItem)
+    fun updateTask(taskItem: TaskItem)
 
     fun changeOrder(taskList: List<TaskItem>, orderBy: Int): MutableList<TaskItem>
 

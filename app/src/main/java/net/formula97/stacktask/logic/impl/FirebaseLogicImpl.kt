@@ -73,8 +73,8 @@ class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepo
         firebaseRepository.addTask(taskItem)
     }
 
-    override fun updateTask(taskitem: TaskItem) {
-        firebaseRepository.updateTask(taskitem)
+    override fun updateTask(taskItem: TaskItem) {
+        firebaseRepository.updateTask(taskItem)
     }
 
     override fun changeOrder(taskList: List<TaskItem>, orderBy: Int): MutableList<TaskItem> {
