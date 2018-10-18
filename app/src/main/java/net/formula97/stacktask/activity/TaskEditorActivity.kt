@@ -1,16 +1,21 @@
 package net.formula97.stacktask.activity
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_task_editor.*
 import net.formula97.stacktask.R
 import net.formula97.stacktask.fragment.DateTimePickerFragment
+import net.formula97.stacktask.fragment.MsgDialogFragment
 import net.formula97.stacktask.kind.TaskItem
 import net.formula97.stacktask.kind.TaskItemBuilder
+import net.formula97.stacktask.logic.FirebaseLogic
 import net.formula97.stacktask.misc.AppConstants
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -90,20 +95,22 @@ class TaskEditorActivity : AbstractAppActivity() {
             }
 
             if (preferenceLogic.isShowConfirmDialog()) {
-                // TODO 確認ダイアログを出す処理を書く
-            } else {
-                collectFromView()
-
-                editorTaskItem.updatedAt = Date().time
-
-                if (hideDone) {
-                    editorTaskItem.createdAt = Date().time
-                    firebaseLogic.addTask(editorTaskItem)
+                if (editor_done.isChecked) {
+                    // 確認ダイアログを出す
+                    val dialog: MsgDialogFragment = MsgDialogFragment.getInstance(getString(R.string.task_will_be_completed), getString(R.string.confirm))
+                    dialog.setButtonListener(object : MsgDialogFragment.OnDialogButtonClickListener {
+                        override fun onDialogButtonClick(which: Int) {
+                            if (which == DialogInterface.BUTTON_POSITIVE) {
+                                submitTaskItem()
+                            }
+                        }
+                    })
                 } else {
-                    firebaseLogic.updateTask(editorTaskItem)
+                    submitTaskItem()
                 }
+            } else {
+                submitTaskItem()
             }
-
         }
 
         editor_due_date.setOnClickListener { _ ->
@@ -124,6 +131,36 @@ class TaskEditorActivity : AbstractAppActivity() {
             dialog.setOnDateTimeSetListener(callback)
 
             dialog.show(supportFragmentManager, DateTimePickerFragment.FRAGMENT_TAG)
+        }
+    }
+
+    private fun submitTaskItem() {
+        collectFromView()
+
+        editorTaskItem.updatedAt = Date().time
+
+        val callback: FirebaseLogic.OnSubmitFinishedListener = object : FirebaseLogic.OnSubmitFinishedListener {
+            override fun onSuccess(submitType: String) {
+                var toastStr = 0
+                when (submitType) {
+                    AppConstants.SUBMIT_ADD -> toastStr = R.string.task_created
+                    AppConstants.SUBMIT_UPDATE -> toastStr = R.string.task_modified
+                }
+
+                Toast.makeText(applicationContext, toastStr, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+
+            override fun onFailure(submitType: String, exception: Exception) {
+                Log.w("", "Error occurred, Submit type = $submitType", exception)
+            }
+        }
+
+        if (hideDone) {
+            editorTaskItem.createdAt = Date().time
+            firebaseLogic.addTask(editorTaskItem, callback)
+        } else {
+            firebaseLogic.updateTask(editorTaskItem, callback)
         }
     }
 

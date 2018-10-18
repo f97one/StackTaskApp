@@ -28,4 +28,6 @@
     <string name="exceed_32_chars">Task name must be 32 characters or less.</string>
     <string name="exceed_200_chars">Details must be 200 characters or less.</string>
     <string name="determine">Determine</string>
+    <string name="task_created">Task created.</string>
+    <string name="task_modified">Task modified.</string>
 </resources>
