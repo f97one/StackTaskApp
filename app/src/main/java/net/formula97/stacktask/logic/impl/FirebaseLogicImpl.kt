@@ -109,6 +109,14 @@ class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepo
         return mutableList
     }
 
+    override fun addTask(taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener) {
+        firebaseRepository.addTask(taskItem, callback)
+    }
+
+    override fun updateTask(taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener) {
+        firebaseRepository.updateTask(taskItem, callback)
+    }
+
     override fun getReference(): DatabaseReference {
         return firebaseRepository.getReference()
     }

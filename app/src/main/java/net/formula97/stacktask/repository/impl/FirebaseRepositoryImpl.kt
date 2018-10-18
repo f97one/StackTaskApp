@@ -1,13 +1,14 @@
 package net.formula97.stacktask.repository.impl
 
 import android.util.Log
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.database.*
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
 import net.formula97.stacktask.kind.TaskItem
+import net.formula97.stacktask.logic.FirebaseLogic
+import net.formula97.stacktask.misc.AppConstants
 import net.formula97.stacktask.repository.FirebaseRepository
 import net.formula97.stacktask.repository.FutureSnapshot
 
@@ -93,10 +94,10 @@ class FirebaseRepositoryImpl: FirebaseRepository {
         return key
     }
 
-    override fun updateTask(taskitem: TaskItem) {
-        val taskMap: HashMap<String, Any?> = kindToMap(taskitem)
+    override fun updateTask(taskItem: TaskItem) {
+        val taskMap: HashMap<String, Any?> = kindToMap(taskItem)
 
-        val key = taskitem.taskId
+        val key = taskItem.taskId
 
         val childUpdateMap: HashMap<String, Any?> = HashMap()
         childUpdateMap[key] = taskMap
@@ -107,6 +108,43 @@ class FirebaseRepositoryImpl: FirebaseRepository {
                 }
                 .addOnFailureListener { exception ->
                     Log.w("", exception)
+                }
+    }
+
+    override fun addTask(taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener): String {
+        val key = database.push().key
+
+        taskItem.taskId = key!!
+        val taskMap: HashMap<String, Any?> = kindToMap(taskItem)
+
+        val childUpdateMap: HashMap<String, Any?> = HashMap()
+        childUpdateMap[key] = taskMap
+
+        database.updateChildren(childUpdateMap)
+                .addOnSuccessListener {
+                    callback.onSuccess(AppConstants.SUBMIT_ADD)
+                }
+                .addOnFailureListener { exception ->
+                    callback.onFailure(AppConstants.SUBMIT_ADD, exception)
+                }
+
+        return key
+    }
+
+    override fun updateTask(taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener) {
+        val taskMap: HashMap<String, Any?> = kindToMap(taskItem)
+
+        val key = taskItem.taskId
+
+        val childUpdateMap: HashMap<String, Any?> = HashMap()
+        childUpdateMap[key] = taskMap
+
+        database.updateChildren(childUpdateMap)
+                .addOnSuccessListener {
+                    callback.onSuccess(AppConstants.SUBMIT_UPDATE)
+                }
+                .addOnFailureListener { exception ->
+                    callback.onFailure(AppConstants.SUBMIT_UPDATE, exception)
                 }
     }
 
