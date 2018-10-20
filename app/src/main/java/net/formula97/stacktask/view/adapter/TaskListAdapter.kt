@@ -145,6 +145,7 @@ class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView
     }
 
     fun replaceItems(items: MutableList<TaskItem>) {
+        clear(false)
         reentrantLock.withLock {
             this.taskList = items
             notifyDataSetChanged()
