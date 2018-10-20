@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import net.formula97.stacktask.R
 import net.formula97.stacktask.kind.TaskItem
+import net.formula97.stacktask.misc.AppConstants
 import net.formula97.stacktask.view.holder.TaskListViewHolder
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.Comparator
 import kotlin.concurrent.withLock
@@ -81,7 +83,9 @@ class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView
 
         holder.itemTaskName.text = item.taskName
         holder.itemCompletedCheck.isChecked = item.finished
-        holder.itemDueDate.text = item.dueDate
+
+        val sdf = SimpleDateFormat(AppConstants.APP_STANDARD_DATETIME_FORMAT, Locale.getDefault())
+        holder.itemDueDate.text = sdf.format(Date(item.dueDate))
 
         val textPaint = holder.itemTaskName.paint
         if (item.finished) {

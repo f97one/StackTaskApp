@@ -24,7 +24,6 @@ class TaskEditorActivity : AbstractAppActivity() {
     private lateinit var editorTaskItem: TaskItem
     private var hideDone: Boolean = false
     private var editorCalendar: Calendar = Calendar.getInstance()
-    private var tmpCalendar: Calendar = Calendar.getInstance()
 
     private val taskItemKey = "taskItemKey"
     private val hideDoneKey = "hideDoneKey"
@@ -44,8 +43,7 @@ class TaskEditorActivity : AbstractAppActivity() {
             btnResId = android.R.drawable.ic_menu_add
             editorCalendar.add(Calendar.DAY_OF_MONTH, 7)
 
-            val dateFormat = SimpleDateFormat(AppConstants.APP_STANDARD_DATETIME_FORMAT, Locale.getDefault())
-            editorTaskItem.dueDate = dateFormat.format(editorCalendar.time)
+            editorTaskItem.dueDate = editorCalendar.timeInMillis
 
         } else {
             btnResId = android.R.drawable.ic_menu_edit
@@ -94,38 +92,34 @@ class TaskEditorActivity : AbstractAppActivity() {
                 return@setOnClickListener
             }
 
-            if (preferenceLogic.isShowConfirmDialog()) {
-                if (editor_done.isChecked) {
-                    // 確認ダイアログを出す
-                    val dialog: MsgDialogFragment = MsgDialogFragment.getInstance(getString(R.string.task_will_be_completed), getString(R.string.confirm))
-                    dialog.setButtonListener(object : MsgDialogFragment.OnDialogButtonClickListener {
-                        override fun onDialogButtonClick(which: Int) {
-                            if (which == DialogInterface.BUTTON_POSITIVE) {
-                                submitTaskItem()
-                            }
+            if (preferenceLogic.isShowConfirmDialog() && editor_done.isChecked) {
+                // 確認ダイアログを出す
+                val dialog: MsgDialogFragment = MsgDialogFragment.getInstance(getString(R.string.task_will_be_completed), getString(R.string.confirm))
+                dialog.setButtonListener(object : MsgDialogFragment.OnDialogButtonClickListener {
+                    override fun onDialogButtonClick(which: Int) {
+                        if (which == DialogInterface.BUTTON_POSITIVE) {
+                            submitTaskItem()
                         }
-                    })
-                } else {
-                    submitTaskItem()
-                }
+                    }
+                })
             } else {
                 submitTaskItem()
             }
         }
 
         editor_due_date.setOnClickListener { _ ->
-            val simpleDateFormat = SimpleDateFormat(AppConstants.APP_STANDARD_DATETIME_FORMAT, Locale.getDefault())
-            val date = simpleDateFormat.parse(editorTaskItem.dueDate)
             val cal = Calendar.getInstance()
-            cal.timeInMillis = date.time
+            cal.timeInMillis = editorTaskItem.dueDate
 
             val dialog: DateTimePickerFragment = DateTimePickerFragment.create(cal)
             val callback = object : DateTimePickerFragment.OnDateTimeSetListener {
                 override fun onDateTimeSet(calendar: Calendar) {
                     editorCalendar = calendar
-                    editorTaskItem.dueDate = simpleDateFormat.format(calendar.time)
+                    editorTaskItem.dueDate = calendar.timeInMillis
 
-                    editor_due_date.text = editorTaskItem.dueDate
+                    val sdf = SimpleDateFormat(AppConstants.APP_STANDARD_DATETIME_FORMAT, Locale.getDefault())
+
+                    editor_due_date.text = sdf.format(Date(editorTaskItem.dueDate))
                 }
             }
             dialog.setOnDateTimeSetListener(callback)
@@ -172,7 +166,10 @@ class TaskEditorActivity : AbstractAppActivity() {
         }
 
         editor_task_name.setText(editorTaskItem.taskName)
-        editor_due_date.text = editorTaskItem.dueDate
+
+        val sdf = SimpleDateFormat(AppConstants.APP_STANDARD_DATETIME_FORMAT, Locale.getDefault())
+        editor_due_date.text = sdf.format(Date(editorTaskItem.dueDate))
+
         editor_priority.rating = editorTaskItem.priority.toFloat()
         editor_details.setText(editorTaskItem.taskDetail)
         editor_done.isChecked = editorTaskItem.finished
@@ -207,7 +204,10 @@ class TaskEditorActivity : AbstractAppActivity() {
 
     private fun collectFromView() {
         editorTaskItem.taskName = editor_task_name.text.toString()
-        editorTaskItem.dueDate = editor_due_date.text.toString()
+
+        val sdf = SimpleDateFormat(AppConstants.APP_STANDARD_DATETIME_FORMAT, Locale.getDefault())
+        editorTaskItem.dueDate = sdf.parse(editor_due_date.text.toString()).time
+
         editorTaskItem.priority = editor_priority.rating.toInt()
         editorTaskItem.taskDetail = editor_details.text.toString()
         editorTaskItem.finished = editor_done.isChecked

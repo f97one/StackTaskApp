@@ -19,7 +19,7 @@ data class TaskItem(var taskName: String = "") : Serializable {
     /**
      * 期日
      */
-    var dueDate: String? = null
+    var dueDate: Long = Calendar.getInstance().timeInMillis
     /**
      * 優先度
      */

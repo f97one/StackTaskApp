@@ -23,14 +23,9 @@ class TaskItemBuilderTest {
         assertThat(result.taskDetail, `is`(""))
         assertThat(result.finished, `is`(false))
 
-        val cal1 = Calendar.getInstance();
-        val sdf = SimpleDateFormat(AppConstants.APP_STANDARD_DATETIME_FORMAT, Locale.getDefault())
-        cal1.add(Calendar.DAY_OF_MONTH, 7)
-        val dueDate = sdf.format(cal1.time)
-
-        assertThat(result.dueDate, startsWith(dueDate))
-
         val current: Long = Date().time
+
+        assertThat(current - result.dueDate, lessThan(1000L))
 
         // 1秒未満ならOKとする
         assertThat(current - result.createdAt, lessThan(1000L))
@@ -66,7 +61,7 @@ class TaskItemBuilderTest {
         assertThat(result.taskDetail, `is`("タスクの詳細が入る"))
         assertThat(result.finished, `is`(true))
         assertThat(result.taskId, `is`(testTaskId))
-        assertThat(result.dueDate, startsWith(dueDate))
+        assertThat(d.time - result.dueDate, lessThan(1000L))
         assertThat(d.time - result.createdAt, lessThan(1000L))
         assertThat(d.time - result.updatedAt, lessThan(1000L))
     }
@@ -95,13 +90,16 @@ class TaskItemBuilderTest {
 
         val result = taskBuilder.build()
 
+        val sdf = SimpleDateFormat(AppConstants.APP_STANDARD_DATETIME_FORMAT, Locale.getDefault())
+        val expectedDueDate: Long = sdf.parse(dd).time
+
         assertThat(result.userId, `is`("user1@example.com"))
         assertThat(result.taskName, `is`("task3"))
         assertThat(result.priority, `is`(2))
         assertThat(result.taskDetail, `is`("タスクの詳細が入る"))
         assertThat(result.finished, `is`(true))
         assertThat(result.taskId, `is`(testTaskId))
-        assertThat(result.dueDate, startsWith(dd))
+        assertThat(expectedDueDate - result.dueDate, lessThan(60000L))
         assertThat(created.time - result.createdAt, lessThan(1000L))
         assertThat(updated.time - result.updatedAt, lessThan(1000L))
     }

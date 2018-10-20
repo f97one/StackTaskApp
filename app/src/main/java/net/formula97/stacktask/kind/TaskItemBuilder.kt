@@ -56,13 +56,14 @@ class TaskItemBuilder(taskName: String) {
     }
 
     fun dueDate(date: Date): TaskItemBuilder {
-        taskItem.dueDate = getDateAsString(date)
+        taskItem.dueDate = date.time
 
         return this
     }
 
     fun dueDate(dateString: String): TaskItemBuilder {
-        taskItem.dueDate = dateString
+        val sdf = SimpleDateFormat(AppConstants.APP_STANDARD_DATETIME_FORMAT, Locale.getDefault())
+        taskItem.dueDate = sdf.parse(dateString).time
 
         return this
     }
