@@ -102,6 +102,7 @@ class TaskEditorActivity : AbstractAppActivity() {
                         }
                     }
                 })
+                dialog.show(supportFragmentManager, MsgDialogFragment.DIALOG_TAG)
             } else {
                 submitTaskItem()
             }
