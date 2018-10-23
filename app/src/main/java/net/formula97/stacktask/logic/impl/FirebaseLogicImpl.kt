@@ -16,6 +16,7 @@ import net.formula97.stacktask.kind.TaskItem
 import net.formula97.stacktask.logic.FirebaseLogic
 import net.formula97.stacktask.misc.AppConstants
 import net.formula97.stacktask.repository.FirebaseRepository
+import java.util.*
 
 class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepository, private val context: Context) : FirebaseLogic {
     override fun logout(callback: FirebaseLogic.OnSignInFinishedListener) {
@@ -81,28 +82,20 @@ class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepo
         val mutableList: MutableList<TaskItem> = mutableListOf()
         mutableList.addAll(taskList)
 
+        val currentSerial: Long = Date().time
+
         when (orderBy) {
             AppConstants.ORDER_BY_DUE_DATE -> {
-                mutableList.sortedWith(compareByDescending<TaskItem> { it.dueDate }
-                        .thenByDescending { it.priority }
-                        .thenBy { it.taskName }
-                )
+                mutableList.sortBy { it.dueDate - currentSerial }
             }
             AppConstants.ORDER_BY_PRIORITY -> {
-                mutableList.sortedWith(compareByDescending<TaskItem> { it.priority }
-                        .thenByDescending { it.dueDate }
-                        .thenBy { it.taskName })
+                mutableList.sortByDescending { it.priority }
             }
             AppConstants.ORDER_BY_NAME -> {
-                mutableList.sortedWith(compareBy<TaskItem> { it.taskName }
-                        .thenByDescending { it.dueDate }
-                        .thenByDescending { it.priority })
+                mutableList.sortBy { it.taskName }
             }
             else -> {
-                mutableList.sortedWith(compareByDescending<TaskItem> { it.dueDate }
-                        .thenByDescending { it.priority }
-                        .thenBy { it.taskName }
-                )
+                mutableList.sortBy { it.dueDate - currentSerial }
             }
         }
 
