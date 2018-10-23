@@ -214,15 +214,18 @@ class TaskListActivity : AbstractAppActivity() {
         }
 
         override fun onDataChange(dataSnapshot: DataSnapshot) {
+            val gotList = mutableListOf<TaskItem>()
+
             for (snapshot in dataSnapshot.children) {
                 val key = snapshot.key
                 val i = snapshot.getValue(TaskItem::class.java)
                 if (i != null) {
                     i.taskId = key!!
-                    taskItemList.add(i)
+                    gotList.add(i)
                 }
             }
 
+            taskItemList = gotList
             invalidateList(tmpTaskOrder)
         }
     }
