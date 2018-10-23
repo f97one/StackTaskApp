@@ -90,11 +90,40 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@string/details"/>
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/details"/>
+
+                <TextView
+                    android:id="@+id/current_length"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toStartOf="@+id/divider"
+                    tools:text="128"/>
+
+                <TextView
+                    android:id="@+id/divider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toStartOf="@+id/maxChars"
+                    android:text="/"/>
+
+                <TextView
+                    android:id="@+id/maxChars"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="200"/>
+
+            </RelativeLayout>
 
             <EditText
                 android:id="@+id/editor_details"
@@ -108,33 +137,6 @@
                 android:gravity="top"
                 tools:text="新しいネタのブログを書く"
                 />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp">
-
-                <TextView
-                    android:id="@+id/current_length"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toStartOf="@+id/divider"
-                    tools:text="128"/>
-                <TextView
-                    android:id="@+id/divider"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toStartOf="@+id/maxChars"
-                    android:text="/"/>
-                <TextView
-                    android:id="@+id/maxChars"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:text="200"/>
-
-            </RelativeLayout>
 
             <CheckBox
                 android:id="@+id/editor_done"
