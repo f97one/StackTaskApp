@@ -85,7 +85,9 @@ class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView
         holder.itemCompletedCheck.isChecked = item.finished
 
         val sdf = SimpleDateFormat(AppConstants.APP_STANDARD_DATETIME_FORMAT, Locale.getDefault())
-        holder.itemDueDate.text = sdf.format(Date(item.dueDate))
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = item.dueDate
+        holder.itemDueDate.text = sdf.format(cal.time)
 
         val textPaint = holder.itemTaskName.paint
         if (item.finished) {
