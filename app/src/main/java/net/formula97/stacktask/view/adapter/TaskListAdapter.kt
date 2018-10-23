@@ -1,6 +1,8 @@
 package net.formula97.stacktask.view.adapter
 
 import android.graphics.Paint
+import android.os.Handler
+import android.os.Looper
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +22,8 @@ class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView
     }
 
     override fun remove(item: TaskItem) {
-        reentrantLock.withLock {
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
             val position = taskList.indexOf(item)
             taskList.removeAt(position)
             notifyItemRemoved(position)
@@ -28,21 +31,24 @@ class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView
     }
 
     override fun sort(comparator: Comparator<TaskItem>) {
-        reentrantLock.withLock {
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
             Collections.sort(taskList, comparator)
             notifyDataSetChanged()
         }
     }
 
     override fun reverse() {
-        reentrantLock.withLock {
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
             taskList.reverse()
             notifyDataSetChanged()
         }
     }
 
     override fun clear(refresh: Boolean) {
-        reentrantLock.withLock {
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
             taskList.clear()
             if (refresh) {
                 notifyDataSetChanged()
@@ -51,7 +57,8 @@ class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView
     }
 
     override fun addAll(dataset: MutableList<TaskItem>) {
-        reentrantLock.withLock {
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
             taskList.addAll(dataset)
             notifyDataSetChanged()
         }
@@ -130,21 +137,24 @@ class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView
     }
 
     override fun addItem(item: TaskItem) {
-        reentrantLock.withLock {
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
             taskList.add(item)
             notifyItemInserted(itemCount)
         }
     }
 
     fun addItem(indexOf: Int, taskItem: TaskItem) {
-        reentrantLock.withLock {
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
             taskList.add(indexOf, taskItem)
             notifyItemInserted(indexOf)
         }
     }
 
     fun replaceItem(index: Int, item: TaskItem) {
-        reentrantLock.withLock {
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
             taskList[index] = item
             notifyItemChanged(index)
         }
@@ -152,7 +162,8 @@ class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView
 
     fun replaceItems(items: MutableList<TaskItem>) {
         clear(false)
-        reentrantLock.withLock {
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
             this.taskList = items
             notifyDataSetChanged()
         }
