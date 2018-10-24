@@ -1,6 +1,8 @@
 package net.formula97.stacktask.activity
 
 import android.os.Bundle
+import android.widget.ArrayAdapter
+import kotlinx.android.synthetic.main.activity_app_config.*
 import net.formula97.stacktask.R
 
 class AppConfigActivity : AbstractAppActivity() {
@@ -9,11 +11,14 @@ class AppConfigActivity : AbstractAppActivity() {
     }
 
     override fun onCreateImpl(savedInstanceState: Bundle?) {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        val adapter = ArrayAdapter.createFromResource(this, R.array.task_order_menu, R.layout.spinner_item)
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+        task_order_by.adapter = adapter
     }
 
     override fun onResumeImpl() {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
 }
