@@ -25,13 +25,25 @@ class AppConstants {
          */
         const val ORDER_BY_DUE_DATE: Int = 10
         /**
+         * Spinner位置：期日順
+         */
+        const val POSITION_DUE_DATE: Int = 0
+        /**
          * 優先度順
          */
         const val ORDER_BY_PRIORITY: Int = 11
         /**
+         * Spinner位置：優先度順
+         */
+        const val POSITION_PRIORITY:Int = 1
+        /**
          * 名前順
          */
         const val ORDER_BY_NAME: Int = 12
+        /**
+         * Spinner位置：名前順
+         */
+        const val POSITION_NAME: Int = 2
         /**
          * 処理タイプ：追加
          */
