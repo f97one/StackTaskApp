@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="task_order_menu">
+        <item>@string/due_date</item>
+        <item>@string/priority</item>
+        <item>@string/name</item>
+    </string-array>
+</resources>

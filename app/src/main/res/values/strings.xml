@@ -30,4 +30,7 @@
     <string name="determine">Determine</string>
     <string name="task_created">Task created.</string>
     <string name="task_modified">Task modified.</string>
+    <string name="task_ordered_by">Task Ordered by</string>
+    <string name="name">Name</string>
+    <string name="confirm_when_complete_task">Confirm when complete task</string>
 </resources>
