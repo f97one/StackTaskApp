@@ -13,6 +13,7 @@ import net.formula97.stacktask.R
 import net.formula97.stacktask.logic.FirebaseLogic
 import net.formula97.stacktask.logic.impl.FirebaseLogicImpl
 import net.formula97.stacktask.repository.impl.FirebaseRepositoryImpl
+import java.lang.Exception
 
 class LoginActivity : AppCompatActivity() {
 
@@ -84,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        override fun onFailure(reasonException: ApiException) {
+        override fun onFailure(reasonException: Exception?) {
             val prog: ProgressFragment = supportFragmentManager.findFragmentByTag(ProgressFragment.FRAGMENT_TAG) as ProgressFragment
             prog.dismiss()
 

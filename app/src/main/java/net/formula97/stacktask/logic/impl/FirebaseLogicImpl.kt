@@ -55,7 +55,7 @@ class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepo
                     if (task.isSuccessful) {
                         callback.onSuccess(auth.currentUser)
                     } else {
-                        callback.onFailure(task.exception as ApiException)
+                        callback.onFailure(task.exception)
                     }
                 }
     }

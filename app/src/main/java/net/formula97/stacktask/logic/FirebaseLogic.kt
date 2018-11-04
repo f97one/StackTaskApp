@@ -1,19 +1,17 @@
 package net.formula97.stacktask.logic
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import net.formula97.stacktask.kind.TaskItem
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
-import java.lang.Exception
+import net.formula97.stacktask.kind.TaskItem
 import java.util.*
 
 interface FirebaseLogic {
 
     interface OnSignInFinishedListener: EventListener {
         fun onSuccess(loggedUser: FirebaseUser?)
-        fun onFailure(reasonException: ApiException)
+        fun onFailure(reasonException: Exception?)
     }
 
     interface OnSubmitFinishedListener: EventListener {
