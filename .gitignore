@@ -10,6 +10,7 @@ build/*
 .externalNativeBuild
 .classpath
 .project
+.settings/
 
 # Google Service configuration
 google-services.json
