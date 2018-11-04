@@ -24,6 +24,8 @@
         android:layout_marginTop="12dp"
         android:layout_marginStart="8dp"
         tools:text="Write new blog entry"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
         android:ellipsize="end" />
 
     <LinearLayout
