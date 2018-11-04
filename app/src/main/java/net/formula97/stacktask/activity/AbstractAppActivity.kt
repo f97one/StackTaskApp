@@ -101,7 +101,7 @@ abstract class AbstractAppActivity: AppCompatActivity() {
                             startActivity(i3)
                         }
 
-                        override fun onFailure(reasonException: ApiException) {
+                        override fun onFailure(reasonException: Exception?) {
                         }
                     }
 
