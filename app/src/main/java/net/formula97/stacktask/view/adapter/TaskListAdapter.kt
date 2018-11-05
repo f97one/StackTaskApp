@@ -123,8 +123,10 @@ class TaskListAdapter(private var taskList: MutableList<TaskItem>): RecyclerView
             onItemClickLister.onItemClick(v, position, item)
         }
 
-        holder.itemCompletedCheck.setOnCheckedChangeListener { buttonView, isChecked ->
-            onItemCheckedChangeListener.onItemCheckedChange(buttonView, position, isChecked, item)
+        // チェックボックスの値変更通知は、自力で読みだした値を投げることで代用する
+        holder.itemCompletedCheck.setOnClickListener { v ->
+            val checked = holder.itemCompletedCheck.isChecked
+            onItemCheckedChangeListener.onItemCheckedChange(v, position, checked, item)
         }
     }
 
