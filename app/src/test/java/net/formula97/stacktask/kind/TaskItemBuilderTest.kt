@@ -17,7 +17,6 @@ class TaskItemBuilderTest {
 
         val result = taskBuilder.createAsDefault(mockUser)
 
-        assertThat(result.userId, `is`("user1@example.com"))
         assertThat(result.taskName, `is`("task1"))
         assertThat(result.priority, `is`(1))
         assertThat(result.taskDetail, `is`(""))
@@ -43,8 +42,7 @@ class TaskItemBuilderTest {
         val sdf = SimpleDateFormat(AppConstants.APP_STANDARD_DATETIME_FORMAT, Locale.getDefault())
         val dueDate = sdf.format(d)
 
-        taskBuilder.userId(FirebaseUserMock())
-                .taskId(testTaskId)
+        taskBuilder.taskId(testTaskId)
                 .taskName("task2")
                 .dueDate(d)
                 .priority(2)
@@ -55,7 +53,6 @@ class TaskItemBuilderTest {
 
         val result = taskBuilder.build()
 
-        assertThat(result.userId, `is`("user1@example.com"))
         assertThat(result.taskName, `is`("task2"))
         assertThat(result.priority, `is`(2))
         assertThat(result.taskDetail, `is`("タスクの詳細が入る"))
@@ -78,8 +75,7 @@ class TaskItemBuilderTest {
         cal.add(Calendar.DAY_OF_MONTH, 3)
         val updated = cal.time
 
-        taskBuilder.userId(FirebaseUserMock())
-                .taskId(testTaskId)
+        taskBuilder.taskId(testTaskId)
                 .taskName("task3")
                 .dueDate(dd)
                 .priority(2)
@@ -93,7 +89,6 @@ class TaskItemBuilderTest {
         val sdf = SimpleDateFormat(AppConstants.APP_STANDARD_DATETIME_FORMAT, Locale.getDefault())
         val expectedDueDate: Long = sdf.parse(dd).time
 
-        assertThat(result.userId, `is`("user1@example.com"))
         assertThat(result.taskName, `is`("task3"))
         assertThat(result.priority, `is`(2))
         assertThat(result.taskDetail, `is`("タスクの詳細が入る"))

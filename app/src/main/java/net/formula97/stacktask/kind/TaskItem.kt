@@ -13,10 +13,6 @@ data class TaskItem(var taskName: String = "") : Serializable {
      */
     var taskId: String = UUID.randomUUID().toString()
     /**
-     * 保有者のユーザーID
-     */
-    var userId: String? = null
-    /**
      * 期日
      */
     var dueDate: Long = Calendar.getInstance().timeInMillis

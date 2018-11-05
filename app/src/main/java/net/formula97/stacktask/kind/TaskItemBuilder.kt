@@ -15,7 +15,6 @@ class TaskItemBuilder(taskName: String) {
     }
 
     fun createAsDefault(user: FirebaseUser): TaskItem {
-        userId(user)
         val cal = Calendar.getInstance()
 
         createdAt(cal.time)
@@ -33,18 +32,6 @@ class TaskItemBuilder(taskName: String) {
 
     fun taskId(taskId: String): TaskItemBuilder {
         taskItem.taskId = taskId
-
-        return this
-    }
-
-    fun userId(userId: String): TaskItemBuilder {
-        taskItem.userId = userId
-
-        return this
-    }
-
-    fun userId(user: FirebaseUser): TaskItemBuilder {
-        taskItem.userId = user.uid
 
         return this
     }
