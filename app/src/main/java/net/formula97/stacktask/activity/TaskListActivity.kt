@@ -42,20 +42,23 @@ class TaskListActivity : AbstractAppActivity() {
     }
 
     private fun startFetchingData() {
-        val uid = firebaseLogic.getCurrentUser()!!.uid
+        val uid = getUser()!!.uid
 
-        val reference = firebaseLogic.getReference()
-        reference.startAt(uid, "userId")
+        val reference = firebaseLogic.getReference(uid)
         reference.addListenerForSingleValueEvent(fetchCallback)
     }
 
     override fun onPause() {
         super.onPause()
-        firebaseLogic.getReference().removeEventListener(fetchCallback)
+
+        if (getUser() != null) {
+            val uid = getUser()!!.uid
+            firebaseLogic.getReference(uid).removeEventListener(fetchCallback)
+        }
     }
 
     override fun onCreateImpl(savedInstanceState: Bundle?) {
-        add_task_btn.setOnClickListener { _ ->
+        add_task_btn.setOnClickListener {
             // タスク編集画面を出す
             val intent = Intent(applicationContext, TaskEditorActivity::class.java)
             startActivity(intent)
