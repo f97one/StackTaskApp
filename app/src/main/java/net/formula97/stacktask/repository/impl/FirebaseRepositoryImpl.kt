@@ -24,32 +24,10 @@ class FirebaseRepositoryImpl: FirebaseRepository {
     }
 
     override fun readTasksOnce(uid: String): MutableList<TaskItem> {
-//        val result = emptyList<TaskItem>().toMutableList()
-//
-//        database.addListenerForSingleValueEvent(object : ValueEventListener {
-//            override fun onCancelled(databaseError: DatabaseError) {
-//
-//            }
-//
-//            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                for (snapshot in dataSnapshot.children) {
-//
-//                    val i: TaskItem? = snapshot.getValue(TaskItem::class.java)
-//
-//                    if (i != null) {
-//                        result.add(i)
-//                    }
-//                }
-//            }
-//        })
-//
-//        return result
-
         Log.i(this.javaClass.simpleName, "called oreadTasksOnce")
 
         val deferred: Deferred<MutableList<TaskItem>> = GlobalScope.async(block = {
 
-//            val query = database.equalTo(uid, "userId")
             val futureSnapshot = FutureSnapshot(database)
 
             Log.d(this.javaClass.simpleName, "started to get DataSnapshot.")
@@ -151,7 +129,7 @@ class FirebaseRepositoryImpl: FirebaseRepository {
     private fun kindToMap(taskitem: TaskItem): HashMap<String, Any?> {
         val taskMap: HashMap<String, Any?> = HashMap()
         taskMap["taskId"] = taskitem.taskId
-        taskMap["userId"] = taskitem.userId
+//        taskMap["userId"] = taskitem.userId
         taskMap["taskName"] = taskitem.taskName
         taskMap["dueDate"] = taskitem.dueDate
         taskMap["priority"] = taskitem.priority
@@ -162,7 +140,7 @@ class FirebaseRepositoryImpl: FirebaseRepository {
         return taskMap
     }
 
-    override fun getReference(): DatabaseReference {
-        return database
+    override fun getReference(uid: String): DatabaseReference {
+        return database.child(uid)
     }
 }

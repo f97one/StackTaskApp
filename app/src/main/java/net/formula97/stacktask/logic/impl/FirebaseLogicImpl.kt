@@ -110,7 +110,7 @@ class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepo
         firebaseRepository.updateTask(taskItem, callback)
     }
 
-    override fun getReference(): DatabaseReference {
-        return firebaseRepository.getReference()
+    override fun getReference(uid: String): DatabaseReference {
+        return firebaseRepository.getReference(uid)
     }
 }

@@ -43,5 +43,5 @@ interface FirebaseLogic {
 
     fun changeOrder(taskList: List<TaskItem>, orderBy: Int): MutableList<TaskItem>
 
-    fun getReference(): DatabaseReference
+    fun getReference(uid: String): DatabaseReference
 }

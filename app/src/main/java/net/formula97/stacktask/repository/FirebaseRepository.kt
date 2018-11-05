@@ -10,5 +10,5 @@ interface FirebaseRepository {
     fun addTask(taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener): String
     fun updateTask(taskItem: TaskItem)
     fun updateTask(taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener)
-    fun getReference(): DatabaseReference
+    fun getReference(uid: String): DatabaseReference
 }
