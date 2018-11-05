@@ -28,7 +28,9 @@ class FirebaseRepositoryImpl: FirebaseRepository {
 
         val deferred: Deferred<MutableList<TaskItem>> = GlobalScope.async(block = {
 
-            val futureSnapshot = FutureSnapshot(database)
+            val dbRef = database.child(uid)
+
+            val futureSnapshot = FutureSnapshot(dbRef)
 
             Log.d(this.javaClass.simpleName, "started to get DataSnapshot.")
 
@@ -52,8 +54,9 @@ class FirebaseRepositoryImpl: FirebaseRepository {
         }
     }
 
-    override fun addTask(taskItem: TaskItem): String {
-        val key = database.push().key
+    override fun addTask(uid: String, taskItem: TaskItem): String {
+        val dbRef = database.child(uid)
+        val key = dbRef.push().key
 
         taskItem.taskId = key!!
         val taskMap: HashMap<String, Any?> = kindToMap(taskItem)
@@ -61,7 +64,7 @@ class FirebaseRepositoryImpl: FirebaseRepository {
         val childUpdateMap: HashMap<String, Any?> = HashMap()
         childUpdateMap[key] = taskMap
 
-        database.updateChildren(childUpdateMap)
+        dbRef.updateChildren(childUpdateMap)
                 .addOnSuccessListener {
                     Log.d("", "追加成功")
                 }
@@ -72,7 +75,7 @@ class FirebaseRepositoryImpl: FirebaseRepository {
         return key
     }
 
-    override fun updateTask(taskItem: TaskItem) {
+    override fun updateTask(uid: String, taskItem: TaskItem) {
         val taskMap: HashMap<String, Any?> = kindToMap(taskItem)
 
         val key = taskItem.taskId
@@ -80,7 +83,8 @@ class FirebaseRepositoryImpl: FirebaseRepository {
         val childUpdateMap: HashMap<String, Any?> = HashMap()
         childUpdateMap[key] = taskMap
 
-        database.updateChildren(childUpdateMap)
+        val dbRef = database.child(uid)
+        dbRef.updateChildren(childUpdateMap)
                 .addOnSuccessListener {
                     Log.d("", "更新成功")
                 }
@@ -89,7 +93,7 @@ class FirebaseRepositoryImpl: FirebaseRepository {
                 }
     }
 
-    override fun addTask(taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener): String {
+    override fun addTask(uid: String, taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener): String {
         val key = database.push().key
 
         taskItem.taskId = key!!
@@ -98,7 +102,8 @@ class FirebaseRepositoryImpl: FirebaseRepository {
         val childUpdateMap: HashMap<String, Any?> = HashMap()
         childUpdateMap[key] = taskMap
 
-        database.updateChildren(childUpdateMap)
+        val dbRef = database.child(uid)
+        dbRef.updateChildren(childUpdateMap)
                 .addOnSuccessListener {
                     callback.onSuccess(AppConstants.SUBMIT_ADD)
                 }
@@ -109,7 +114,7 @@ class FirebaseRepositoryImpl: FirebaseRepository {
         return key
     }
 
-    override fun updateTask(taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener) {
+    override fun updateTask(uid: String, taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener) {
         val taskMap: HashMap<String, Any?> = kindToMap(taskItem)
 
         val key = taskItem.taskId
@@ -117,7 +122,8 @@ class FirebaseRepositoryImpl: FirebaseRepository {
         val childUpdateMap: HashMap<String, Any?> = HashMap()
         childUpdateMap[key] = taskMap
 
-        database.updateChildren(childUpdateMap)
+        val dbRef = database.child(uid)
+        dbRef.updateChildren(childUpdateMap)
                 .addOnSuccessListener {
                     callback.onSuccess(AppConstants.SUBMIT_UPDATE)
                 }
@@ -129,7 +135,6 @@ class FirebaseRepositoryImpl: FirebaseRepository {
     private fun kindToMap(taskitem: TaskItem): HashMap<String, Any?> {
         val taskMap: HashMap<String, Any?> = HashMap()
         taskMap["taskId"] = taskitem.taskId
-//        taskMap["userId"] = taskitem.userId
         taskMap["taskName"] = taskitem.taskName
         taskMap["dueDate"] = taskitem.dueDate
         taskMap["priority"] = taskitem.priority

@@ -6,9 +6,9 @@ import net.formula97.stacktask.logic.FirebaseLogic
 
 interface FirebaseRepository {
     fun readTasksOnce(uid: String): MutableList<TaskItem>
-    fun addTask(taskItem: TaskItem): String
-    fun addTask(taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener): String
-    fun updateTask(taskItem: TaskItem)
-    fun updateTask(taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener)
+    fun addTask(uid: String, taskItem: TaskItem): String
+    fun addTask(uid: String, taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener): String
+    fun updateTask(uid: String, taskItem: TaskItem)
+    fun updateTask(uid: String, taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener)
     fun getReference(uid: String): DatabaseReference
 }

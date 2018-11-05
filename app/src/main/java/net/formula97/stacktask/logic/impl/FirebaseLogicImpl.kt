@@ -71,11 +71,13 @@ class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepo
     }
 
     override fun addTask(taskItem: TaskItem) {
-        firebaseRepository.addTask(taskItem)
+        val uid = getCurrentUser()!!.uid
+        firebaseRepository.addTask(uid, taskItem)
     }
 
     override fun updateTask(taskItem: TaskItem) {
-        firebaseRepository.updateTask(taskItem)
+        val uid = getCurrentUser()!!.uid
+        firebaseRepository.updateTask(uid, taskItem)
     }
 
     override fun changeOrder(taskList: List<TaskItem>, orderBy: Int): MutableList<TaskItem> {
@@ -103,11 +105,14 @@ class FirebaseLogicImpl constructor(private val firebaseRepository: FirebaseRepo
     }
 
     override fun addTask(taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener) {
-        firebaseRepository.addTask(taskItem, callback)
+        val uid = getCurrentUser()!!.uid
+
+        firebaseRepository.addTask(uid, taskItem, callback)
     }
 
     override fun updateTask(taskItem: TaskItem, callback: FirebaseLogic.OnSubmitFinishedListener) {
-        firebaseRepository.updateTask(taskItem, callback)
+        val uid = getCurrentUser()!!.uid
+        firebaseRepository.updateTask(uid, taskItem, callback)
     }
 
     override fun getReference(uid: String): DatabaseReference {
