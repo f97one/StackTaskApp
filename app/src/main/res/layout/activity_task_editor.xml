@@ -43,7 +43,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLength="32"
-                    android:maxLines="1"
+                    android:inputType="text"
+                    android:minLines="1"
                     tools:text="ブログを書く" />
 
             </LinearLayout>
@@ -132,7 +133,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:lines="5"
+                android:inputType="textMultiLine"
+                android:minLines="5"
                 android:maxLength="200"
                 android:gravity="top"
                 tools:text="新しいネタのブログを書く"
