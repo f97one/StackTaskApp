@@ -43,8 +43,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLength="32"
-                    android:inputType="text"
+                    android:inputType="none"
                     android:minLines="1"
+                    android:imeOptions="actionNext"
                     tools:text="ブログを書く" />
 
             </LinearLayout>

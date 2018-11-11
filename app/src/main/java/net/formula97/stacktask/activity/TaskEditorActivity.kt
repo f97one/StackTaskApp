@@ -51,7 +51,7 @@ class TaskEditorActivity : AbstractAppActivity() {
 
         submit_task_btn.setImageResource(btnResId)
 
-        // 入力文字数の反映
+        // 入力文字数の反映(タスク詳細)
         val textWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if ( s != null) {
@@ -77,6 +77,26 @@ class TaskEditorActivity : AbstractAppActivity() {
         }
 
         editor_details.addTextChangedListener(textWatcher)
+
+        // Enterの無視(タスク名)
+        val taskNameWatcher = object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // nothing to do
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // nothing to do
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s!!.isNotEmpty() && s.subSequence(s.length - 1, s.length).toString() == "\n") {
+                    // 最後尾についているEnterを無視
+                    val text = editor_task_name.text
+                    text.delete(s.length - 1, s.length)
+                }
+            }
+        }
+        editor_task_name.addTextChangedListener(taskNameWatcher)
 
         submit_task_btn.setOnClickListener { _ ->
             val taskName = editor_task_name.text.toString()
