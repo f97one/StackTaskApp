@@ -10,6 +10,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.login.*
 import net.formula97.stacktask.R
+import net.formula97.stacktask.fragment.ProgressFragment
 import net.formula97.stacktask.logic.FirebaseLogic
 import net.formula97.stacktask.logic.impl.FirebaseLogicImpl
 import net.formula97.stacktask.repository.impl.FirebaseRepositoryImpl

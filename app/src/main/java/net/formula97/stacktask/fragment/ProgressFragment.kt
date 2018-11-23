@@ -1,4 +1,4 @@
-package net.formula97.stacktask.activity
+package net.formula97.stacktask.fragment
 
 import android.app.Dialog
 import android.app.ProgressDialog
@@ -17,7 +17,7 @@ class ProgressFragment: DialogFragment() {
 
     companion object {
 
-        const val FRAGMENT_TAG: String = "net.formula97.stacktask.activity.ProgressFragment.DIALOG_TAG"
+        const val FRAGMENT_TAG: String = "net.formula97.stacktask.fragment.ProgressFragment.DIALOG_TAG"
 
     }
 
